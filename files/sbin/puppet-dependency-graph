@@ -1,0 +1,10 @@
+#!/bin/bash
+$DOT=`which dot`
+DOTFILE=/var/lib/puppet/resources.dot
+GRAPHFILE=/var/lib/puppet/resources.png
+
+[ ! -f $DOTFILE ] && exit 0
+
+$DOT -tpng $DOTFILE -o $GRAPHFILE && rm $DOTFILE
+
+

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Wrapper to let www-data generate certificates
+
+# Override default path before library include: puppet user
+# doesn't have write permission on default LOGDIR
+LOGDIR="/var/log/puppet"
+
+. $(dirname $(realpath $0))/../lib/bash/softec-common.sh || exit
+
+if [ -z $1 ]; then
+    echo "\nSyntax is $0 <hostname>\n"
+    log_error "Command call from user '$USERNAME' without valid parameter"
+    exit 1
+fi
+
+/usr/bin/puppet cert --generate $1

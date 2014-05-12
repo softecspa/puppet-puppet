@@ -1,0 +1,12 @@
+#[<%= scope.lookupvar('::template_header') %>]
+
+$0 = "master"
+
+# ARGV << "--debug"
+
+ARGV << "--logdest" << "/var/log/puppet/master.log"
+ARGV << "--rack"
+
+require 'puppet/application/master'
+
+run Puppet::Application[:master].run

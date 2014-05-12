@@ -1,0 +1,179 @@
+#!/bin/bash
+
+. /usr/local/lib/bash/softec-common.sh || exit
+
+function help()
+{
+    cat << EOF
+
+    USAGE: 
+        $0 [options]
+
+    Run puppet agent until it exits without errors
+
+    OPTIONS:
+        -a          max number of attempts (default: 10)
+        -i          interval between attempts (default: 60)
+        -f          multiplier factor for interval netween attempts (default: 2)
+        -r          reboot after max attempts without any success
+        -m          mail after max attempts without any success
+        -q          make this script more quiet (show only error messages on stderr)
+        -t          exec puppet agent with --noop option
+        -d          exec puppet agent with --debug option
+        -c          exec puppet agent with --no-usecacheonfailure option
+        -h          show this help
+
+EOF
+}
+
+function puppet-motd()
+{
+    [ -d /usr/local/etc/motd.d ] || return 0
+    LASTRUN=$(date +%c)
+    echo -e "\n\nPuppet run on this host on $LASTRUN $1\n\n" > /usr/local/etc/motd.d/puppet-last-run
+}
+
+function correct_run()
+{
+    d=$(date "+%F %T")
+    echo -e "$d: $1" > /etc/puppet/correct_run
+}
+
+# Setting default values for script variables
+declare -i MAX_ATTEMPTS=10
+declare -i WAIT_INTERVAL=30
+declare -i MULTIPLIER_FACTOR=2
+declare -i REBOOT_NEEDED=0
+declare -i MAIL_REQUIRED=0
+declare -i VERBOSE_AGENT=1
+
+PUPPET="/usr/bin/nice -n 10 /usr/bin/ionice -c3 /usr/bin/puppet agent"
+EXEC_OPTIONS="--no-daemonize --onetime --detailed-exitcodes --configtimeout=600"
+OUTPUT_LOGFILE=/var/log/puppet/puppet-run.log
+ERROR_LOGFILE=/var/log/puppet/puppet-err.log
+LOGLEVEL=$LOGLEVEL_NORMAL
+
+while getopts :a:i:f:rmdqhtc OPT; do
+    case ${OPT} in
+        a)
+            log_debug "Setting max attempts to $OPTARG"
+            MAX_ATTEMPTS=$OPTARG
+            ;;
+        i)
+            log_debug "Setting interval between attempts to ${OPTARG}"
+            WAIT_INTERVAL=$OPTARG
+            ;;
+        f)
+            log_debug "Setting multiplier factor of WAIT_INTERVAL to ${OPTARG}"
+            MULTIPLIER_FACTOR=${OPTARG}
+            ;;
+        r)
+            log_debug "Scheduling reboot if puppet cannot run after all "
+            REBOOT_NEEDED=1
+            ;;
+        m)
+            log_debug "Scheduling mail send if puppet cannot run after all"
+            MAIL_REQUIRED=1
+            ;;
+        d)
+            EXEC_OPTIONS="$EXEC_OPTIONS --debug"
+            ;;
+        q)
+            setloglevel $LOGLEVEL_ERROR
+            VERBOSE_AGENT=0
+            ;;
+        t)
+            EXEC_OPTIONS="$EXEC_OPTIONS --noop"
+            ;;
+        c)
+            EXEC_OPTIONS="$EXEC_OPTIONS --no-usecacheonfailure"
+            ;;
+        h)
+            help
+            exit
+            ;;
+        \?)
+            log_error "ERROR: invalid option: -${OPTARG}"
+            help
+            exit 1
+            ;;
+        :)
+            log_error "ERROR: option -$OPTARG requires an argument ..."
+            exit 1
+            ;;
+    esac
+done
+
+if [ $VERBOSE_AGENT -eq 1 ]; then
+    log_debug "Set agent --verbose option"
+    EXEC_OPTIONS="$EXEC_OPTIONS --verbose"
+fi
+
+# Start run attempts
+declare -i COUNTER=1
+while [ $COUNTER -le $MAX_ATTEMPTS ]; do
+    log "Puppet agent run: attempt ${COUNTER}/${MAX_ATTEMPTS}..."
+    COUNTER=$COUNTER+1
+
+    if ! wait_for_low_load; then
+        log_debug "waited too long for low load"
+        continue
+    fi
+
+    $PUPPET $EXEC_OPTIONS --logdest=$OUTPUT_LOGFILE 2>> $ERROR_LOGFILE
+    case $? in
+        0)
+            log "agent returned 0: nothing done"
+            puppet-motd "without anything to do"
+            correct_run "Anything to do"
+            #job done, now quit
+            exit
+            ;;
+        1)
+            if [ -f /var/lib/puppet/state/puppetdlock ]; then
+                log "puppet agent disabled"
+                puppet-motd "puppet agent disabled"
+                exit
+            fi
+
+            log "agent returned 1: error compiling catalog for client"
+            puppet-motd "giving a catalog compilation error. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
+            ;;
+        2)
+            log "agent returned 2: agent made changes without failures"
+            puppet-motd "applying changes without failures. Look at $OUTPUT_LOGFILE for more info on changes."
+            correct_run "Made changes without failures"
+            # job done, now quit
+            exit
+            ;;
+        4)
+            log "agent returned 4: agent failed trying to apply changes"
+            puppet-motd "failing while trying to apply changes. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
+            ;;
+        6)
+            log "agent returned 6: agent made changes but has failures"
+            puppet-motd "applying changes with some failure. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
+            ;;
+        *)
+            log_error "unexpected exit code: '$?'!"
+            puppet-motd "exiting with an unexpected exit code. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened."
+    esac
+
+    log "sleeping for '$WAIT_INTERVAL' seconds before next run..."
+    sleep $WAIT_INTERVAL
+    ((WAIT_INTERVAL = WAIT_INTERVAL * MULTIPLIER_FACTOR))
+done
+
+log_error "reached '$MAX_ATTEMPTS' failures trying to run puppet"
+
+if [ $MAIL_REQUIRED -eq 1 ]; then
+    log "sent error notification to $MAILTO"
+    send_mail "Puppet agent not running on $HOSTNAME" "Puppet failed to run for '$MAX_ATTEMPTS' attempts, agent is not running on this host"
+fi
+
+if [ $REBOOT_NEEDED -eq 1 ]; then
+    log "schedule reboot as requested"
+    /usr/sbin/shutdown -r +1 "System reboot requested for failed puppet run"
+fi
+
+exit 1

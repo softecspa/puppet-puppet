@@ -1,0 +1,57 @@
+##########################
+##  Passenger Settings  ##
+##########################
+PassengerHighPerformance    on
+PassengerMaxPoolSize        15
+PassengerPoolIdleTime       200
+PassengerUseGlobalQueue     on
+PassengerMaxRequests        2500
+PassengerStatThrottleRate   300
+
+RackAutoDetect Off
+RailsAutoDetect Off
+
+Timeout 600
+
+<VirtualHost *:443>
+    SSLEngine on
+    SSLProtocol -ALL +SSLv3 +TLSv1
+    SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:-LOW:-SSLv2:-EXP
+
+    ServerName <%= @master %>
+
+    SSLCertificateFile      /var/lib/puppet/ssl/certs/<%= @fqdn %>.pem
+    SSLCertificateKeyFile   /var/lib/puppet/ssl/private_keys/<%= @fqdn %>.pem
+    SSLCertificateChainFile /var/lib/puppet/ssl/certs/ca.pem
+    SSLCACertificateFile    /var/lib/puppet/ssl/certs/ca.pem
+
+    SSLCARevocationPath /var/lib/puppet/ssl/ca
+    SSLVerifyClient     optional
+    SSLVerifyDepth      1
+    SSLOptions          +StdEnvVars
+
+    # This header needs to be set if using a loadbalancer or proxy
+    RequestHeader unset X-Forwarded-For
+
+    RequestHeader set X-SSL-Subject %{SSL_CLIENT_S_DN}e
+    RequestHeader set X-Client-DN %{SSL_CLIENT_S_DN}e
+    RequestHeader set X-Client-Verify %{SSL_CLIENT_VERIFY}e
+
+    <Location />
+        SetHandler balancer-manager
+        Order allow,deny
+        Allow from all
+    </Location>
+
+    DocumentRoot /usr/share/puppet/rack/puppetmasterd/public/
+    RackBaseURI /
+
+    <Directory /usr/share/puppet/rack/puppetmasterd/>
+        Options None
+        AllowOverride None
+    </Directory>
+
+    LogFormat "%h||%{X-Client-DN}i %t (%T) \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined_forward
+    ErrorLog /var/log/apache2/puppetmaster_err.log
+    CustomLog /var/log/apache2/puppetmaster_acc.log combined_forward
+</VirtualHost>

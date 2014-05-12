@@ -1,0 +1,12 @@
+#! /bin/bash
+
+echo "Enter your SVN credentials to create the tag and switch production"
+read -p "Username: " svn_user
+read -s -p "Password: " svn_pass
+echo
+
+[[ -z $svn_user ]] && echo "Username cannot be empty" && exit 1
+[[ -z $svn_pass ]] && echo "Password cannot be empty" && exit 1
+
+sudo puppet-create-tag $svn_user $svn_pass
+sudo puppet-update-prod $svn_user $svn_pass

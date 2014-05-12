@@ -1,0 +1,49 @@
+#! /bin/bash
+#
+# Aggiorna l'env di produzione con l'ultimo tag
+#
+
+##################
+####   CONF   ####
+##################
+SRV="https://svn.softecspa.it"
+TAGS="/sistemi/puppet/tags"
+PRODPATH="<%= @puppet_env_prod %>"
+
+# eseguibili
+SVN="/usr/bin/svn"
+SORT="/usr/bin/sort"
+TAIL="/usr/bin/tail"
+SED="/bin/sed"
+ECHO="/bin/echo"
+
+BINS=$SVN" "$SORT" "$TAIL" "$SED" "$ECHO
+
+svn_user=$1
+svn_pass=$2
+
+#################
+####   APP   ####
+#################
+
+. $(dirname $(realpath $0))/../lib/bash/softec-common.sh || exit
+
+check_root_uid
+
+# controllo esistenza eseguibili
+for BIN in $BINS; do
+    if [ ! -x $BIN ]; then 
+        echo "Errore: \`"$BIN"' non trovato o non eseguibile. Uscita.";
+        exit 1
+    fi
+done
+
+SVN="$SVN --no-auth-cache --non-interactive --trust-server-cert --username $svn_user --password $svn_pass"
+
+# recupera il tag più recente
+LASTVERS="`$SVN list ${SRV}${TAGS} | $SORT -n | $TAIL -n 1 | $SED -e 's/\/$//'`"
+
+# aggiorna la copia locale con l'ultimo tag
+$SVN switch ${SRV}${TAGS}/${LASTVERS} ${PRODPATH}
+
+echo $?

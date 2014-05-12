@@ -1,0 +1,21 @@
+[jetty]
+# Hostname or IP address to listen for clear-text HTTP.  Default is localhost
+host = <%= @host %>
+
+# Port to listen on for clear-text HTTP.
+port = <%= @host_port %>
+
+# The host or IP address to listen on for HTTPS connections
+ssl-host = <%= @ssl_host %>
+
+# The port to listen on for HTTPS connections
+ssl-port = <%= @ssl_port %>
+
+# Private key path
+ssl-key = <%= @ssl_key %>
+
+# Public certificate path
+ssl-cert = <%= @ssl_cert %>
+
+# Certificate authority path
+ssl-ca-cert = <%= @ssl_ca_cert %>

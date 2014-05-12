@@ -1,0 +1,3 @@
+alias puppet-diff-dev-prod='diff -r -q /etc/puppet/envs/development /etc/puppet/envs/production |egrep -v "(.svn|templates|files)"'
+
+alias puppet-update-dev='sudo svn up /etc/puppet/envs/development/'

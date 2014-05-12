@@ -1,0 +1,47 @@
+#!/bin/bash
+MODULEPATH=/etc/puppet/envs/development/modules:/usr/share/puppet/modules
+BASEDIR=/var/www/puppet-doc.tools.softecspa.it
+DOCDIR=$BASEDIR/web
+DOCDIR_TMP=$BASEDIR/tmp
+DOCDIR_LASTOK=$BASEDIR/lastok
+
+if [ -z $DOCDIR ]; then
+    /bin/echo "DOCDIR must be defined"
+fi
+
+if [ -d $DOCDIR_TMP ]; then
+    /bin/rm -rf $DOCDIR_TMP
+fi
+
+# I test nei moduli condivisi impediscono la generazione
+# della documentazione, li rimuovo. Il prossimo run li rimetterà
+find /usr/share/puppet/modules -name "tests" -type d | xargs rm -rf
+
+# Genero la doc
+/usr/bin/puppet doc --all --outputdir=$DOCDIR_TMP --mode rdoc --modulepath=$MODULEPATH > $BASEDIR/last.error 2>&1
+
+# it seems that the command returns always 0
+RETVAL=$?
+if [ $RETVAL -gt 0 ]; then
+    echo -e "<p>Error generating Puppet documentation:<br />\n<code>\n" > $DOCDIR/index.html
+    cat $BASEDIR/last.error >> $DOCDIR/index.html
+    echo -e "</code>" >> $DOCDIR/index.html
+
+    [ ! -h $DOCDIR/old ] && ln -s $DOCDIR_LASTOK $DOCDIR/old
+
+    echo '<p>Last doc generated without errors is reachable here: <a href="/old/">old</a>' >> $DOCDIR/index.html
+
+    echo "Error creating puppet documentation (returned: $RETVAL)"
+else
+    if [ ! -h $DOCDIR/old ]; then
+        # non c'erano errori al giro precedente, devo salvare la dir DOCDIR_LASTOK
+        [ -d $DOCDIR_LASTOK ] && rm -rf $DOCDIR_LASTOK
+        mv -f $DOCDIR $DOCDIR_LASTOK
+    else
+        # c'erano errori, tolgo la docroot vecchia
+        rm -rf $DOCDIR
+    fi
+    mv $DOCDIR_TMP $DOCDIR
+fi
+
+[ -f $BASEDIR/last.error ] && rm -f $BASEDIR/last.error

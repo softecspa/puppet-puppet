@@ -1,0 +1,76 @@
+#! /bin/bash
+#
+# Creo un nuovo tag partendo da trunk
+#
+
+##################
+####   CONF   ####
+##################
+SRV="https://svn.softecspa.it"
+TAGS="/sistemi/puppet/tags"
+TRUNK="/sistemi/puppet/trunk"
+PRODPATH="<%= @puppet_env_prod %>"
+
+# eseguibili
+SVN="/usr/bin/svn"
+SORT="/usr/bin/sort"
+TAIL="/usr/bin/tail"
+SED="/bin/sed"
+ECHO="/bin/echo"
+
+BINS=$SVN" "$SORT" "$TAIL" "$SED" "$ECHO
+
+svn_user=$1
+svn_pass=$2
+
+#################
+####   APP   ####
+#################
+
+. $(dirname $(realpath $0))/../lib/bash/softec-common.sh || exit
+
+check_root_uid
+
+# controllo esistenza eseguibili
+for BIN in $BINS; do
+    if [ ! -x $BIN ]; then 
+        echo "Errore: \`"$BIN"' non trovato o non eseguibile. Uscita.";
+        exit 1
+    fi
+done
+
+SVN="$SVN --no-auth-cache --non-interactive --trust-server-cert --username $svn_user --password $svn_pass"
+
+# recupera il tag più recente
+LASTVERS="`$SVN list ${SRV}${TAGS} | $SORT -n | $TAIL -n 1 | $SED -e 's/\/$//'`"
+
+# controlla di aver recuperato un valore corretto
+if [[ ! "${LASTVERS}" =~ ^[0-9]\.[0-9]\.[0-9][0-9][0-9]$ ]]; then
+    $ECHO "'$LASTVERS' non è un valore corretto per il numerodi tag. Uscita"
+    exit 1
+fi
+
+# calcola la nuova versione
+NEWVERS="`$ECHO ${LASTVERS} | \
+    awk '
+    BEGIN { FS = "." };
+    {
+        num3 = ($3 + 1) % 1000
+        if (num3 == 0) { 
+            num2 = ($2 + 1) % 10 
+        } else { 
+            num2 = $2 
+        }; 
+        if (num2 != $2 && num2 == 0) { 
+            num1 = $1 + 1 
+        } else { 
+            num1 = $1 
+        }; 
+        printf "%d.%d.%03d\n", num1, num2, num3 
+    }' \
+`"
+
+# creo il nuovo tag
+$SVN copy -m "Created new TAG: ${NEWVERS} through $0" ${SRV}${TRUNK} ${SRV}${TAGS}/${NEWVERS}
+
+echo $?
