@@ -46,7 +46,8 @@ class puppet::master::gh {
     'ispconfig_nginx',
     'ispconfig_zookeeper',
     'puppet',
-    'php5'
+    'php5',
+    'mysql'
   ]
 
   puppet::master::module{ $softec_modules:
