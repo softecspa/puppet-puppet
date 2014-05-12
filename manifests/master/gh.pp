@@ -44,7 +44,8 @@ class puppet::master::gh {
     'solr',
     'ispconfig_solr',
     'ispconfig_nginx',
-    'ispconfig_zookeeper'
+    'ispconfig_zookeeper',
+    'puppet'
   ]
 
   puppet::master::module{ $softec_modules:
