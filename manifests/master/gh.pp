@@ -48,7 +48,10 @@ class puppet::master::gh {
     'puppet',
     'php5',
     'mysql',
-    'pecl'
+    'pecl',
+    'logrotate',
+    'hostname',
+    'devutils',
   ]
 
   puppet::master::module{ $softec_modules:
