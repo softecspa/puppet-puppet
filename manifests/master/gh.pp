@@ -47,7 +47,8 @@ class puppet::master::gh {
     'ispconfig_zookeeper',
     'puppet',
     'php5',
-    'mysql'
+    'mysql',
+    'pecl'
   ]
 
   puppet::master::module{ $softec_modules:
