@@ -52,6 +52,8 @@ class puppet::master::gh {
     'logrotate',
     'hostname',
     'devutils',
+    'basepackages',
+    'apt'
   ]
 
   puppet::master::module{ $softec_modules:
