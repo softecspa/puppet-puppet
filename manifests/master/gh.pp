@@ -56,7 +56,8 @@ class puppet::master::gh {
     'apt',
     'softecscripts',
     'apache2',
-    'common'
+    'common',
+    'cron'
   ]
 
   puppet::master::module{ $softec_modules:
