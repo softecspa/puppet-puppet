@@ -54,7 +54,8 @@ class puppet::master::gh {
     'devutils',
     'basepackages',
     'apt',
-    'softecscripts'
+    'softecscripts',
+    'apache2'
   ]
 
   puppet::master::module{ $softec_modules:
