@@ -55,7 +55,8 @@ class puppet::master::gh {
     'basepackages',
     'apt',
     'softecscripts',
-    'apache2'
+    'apache2',
+    'common'
   ]
 
   puppet::master::module{ $softec_modules:
