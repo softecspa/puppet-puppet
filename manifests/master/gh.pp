@@ -53,7 +53,8 @@ class puppet::master::gh {
     'hostname',
     'devutils',
     'basepackages',
-    'apt'
+    'apt',
+    'softecscripts'
   ]
 
   puppet::master::module{ $softec_modules:
