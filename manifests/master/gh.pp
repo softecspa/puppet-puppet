@@ -58,7 +58,8 @@ class puppet::master::gh {
     'apache2',
     'common',
     'cron',
-    'git'
+    'git',
+    'memcached'
   ]
 
   puppet::master::module{ $softec_modules:
