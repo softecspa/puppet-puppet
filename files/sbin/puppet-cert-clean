@@ -1,0 +1,68 @@
+#!/bin/bash
+# Wrapper to let www-data clean certificates
+
+LOGDIR="/var/log/puppet"
+BASE='/var/lib/puppet/ssl'
+BACKUP='/var/lib/puppet/ssl_old'
+
+. $(dirname $(realpath $0))/../lib/bash/softec-common.sh || exit
+
+if [ -z $1 ] || [ -z $2 ]; then
+    echo "\nSyntax is $0 <action> <hostname>\n"
+    log_error "Command call from user '$USERNAME' without valid parameter"
+    exit 1
+fi
+# create directory for backup if it don't exists
+if [ ! -d $BACKUP ]; then
+    LOG_CREATE_DIR=`mkdir $BACKUP`
+    if [ ! $? -eq 0 ]; then
+        log_error "failed to create $BACKUP: $LOG_CREATE_DIR"
+        exit 1
+    fi
+fi
+
+
+case "$1" in
+        certclean)
+            # backup old certs and keys
+            cd $BASE
+            find ./ -name "$2*" -exec cp -a --parent {} ../ssl_old/ \;
+            find ./ -name "*crl.pem" -exec cp -a --parent {} ../ssl_old/ \;
+
+            # clean certs for hostname
+            CLEAN_LOG=`/usr/bin/puppet cert clean $2`
+            if [ $? -gt 0 ]; then
+                log_error "error cleaning certs for $2: $CLEAN_LOG"
+                exit 1
+            else
+                log "successfully cleaned certs for $2"
+                exit 0
+            fi
+            ;;
+        clean)
+            find $BACKUP -type f -name "$2*" -delete
+            find $BACKUP -type f -name "*crl.pem" -delete
+            exit 0
+            ;;
+        rollback)
+            # clean new certs for hostname
+            CLEAN_LOG=`/usr/bin/puppet cert clean $2`
+            if [ $? -gt 0 ]; then
+                log_error "error cleaning new certs for $2: $CLEAN_LOG"
+                exit 1
+            else
+                log_debug "successfully cleaned certs for $2"
+            fi
+            # restore old certificates and delete the backup copy
+            cd $BACKUP
+            find ./ -name "$2*" -exec cp -a --parent {} ../ssl/ \;
+            find ./ -name "*crl.pem" -exec cp -a --parent {} ../ssl/ \;
+            find ./ -name "$2*" -delete
+            find ./ -name "*crl.pem" -delete
+
+            exit 0
+            ;;
+        *)
+            echo $"Usage: $0 {certclean|clean|rollback} <hostname>"
+            exit 1
+esac

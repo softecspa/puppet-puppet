@@ -38,5 +38,8 @@ class puppet::master::utility {
     '/usr/local/sbin/puppet-cert-generate':
       source  => 'puppet:///modules/puppet/sbin/puppet-cert-generate',
       mode    => '0775';
+    '/usr/local/sbin/puppet-cert-clean':
+      source  => 'puppet:///modules/puppet/sbin/puppet-cert-clean',
+      mode    => '0775';
   }
 }

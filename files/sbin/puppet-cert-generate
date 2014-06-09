@@ -13,4 +13,12 @@ if [ -z $1 ]; then
     exit 1
 fi
 
-/usr/bin/puppet cert --generate $1
+/usr/bin/puppet cert generate $1 | grep -i signed
+# se il puppet master è configurato con l'autosign il comando esce con un errore ed exit code 24
+# anche se i certificati vengono generati correttamente. Uso come stato di uscita quello del grep su 'Signed'
+if [ $? -eq 0 ]; then
+    exit 0
+else
+    log_error "puppet cert generate exit with code $?"
+    exit 1
+fi
