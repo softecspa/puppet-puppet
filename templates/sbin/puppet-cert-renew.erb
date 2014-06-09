@@ -39,8 +39,31 @@ function rollback() {
     send_mail "[PUPPETCERT] failed to update puppet keypair for host `hostname`" "$MAIL_TEXT"
 }
 
+function registry_lock() {
+    locked=1
+    i=1
+
+    while [ $locked -gt 0 ]; do
+        log_debug "try lo lock registry for the $i time"
+        wget --spider --no-verbose -q $REGISTRY_URL/$1/lock
+        locked=$?
+        if [ $locked -gt 0 ]; then
+            if [ $i -eq $2 ]; then
+                log "waited too much to lock registry. Exit, nothing was done!"
+                exit 1
+            else
+                log "registry is locked, sleep for $3 seconds"
+                sleep $3
+            fi
+        else
+            log_debug "registry locked"
+        fi
+        let i=$i+1
+    done
+}
+
 DEBUG=0
-EXPIRE_DAYS_DEFAULT=9999
+EXPIRE_DAYS_DEFAULT=<%= @day_before_renew -%>
 BASE='/var/lib/puppet/ssl'
 BACKUP='/var/lib/puppet/ssl_old'
 PUPPET="/usr/bin/nice -n 10 /usr/bin/ionice -c3 /usr/bin/puppet agent"
@@ -48,6 +71,8 @@ EXEC_OPTIONS="--no-daemonize --onetime --detailed-exitcodes --configtimeout=600 
 FQDN=`hostname -f`
 REGISTRY_URL='http://<%= @registry -%>'
 TMP_LOG=`mktemp`
+LOCK_REGISTRY_MAX_RETRY=5
+LOCK_REGISTRY_TIME_WAIT=60
 
 # set loglevel
 if [ $DEBUG == 1 ]; then
@@ -74,6 +99,9 @@ DIFF_DAYS=`expr $DIFF_SECONDS / 86400`
 log "cert will expire in ${DIFF_DAYS} days"
 
 if [ $DIFF_DAYS -le $EXPIRE_DAYS ]; then
+    # registry lock
+    registry_lock $FQDN $LOCK_REGISTRY_MAX_RETRY $LOCK_REGISTRY_TIME_WAIT
+
     log "start renew procedure"
     if [ ! -d $BACKUP ]; then
         mkdir $BACKUP
@@ -184,10 +212,16 @@ if [ $DIFF_DAYS -le $EXPIRE_DAYS ]; then
         fi
         send_mail "[PUPPETCERT] updated puppet keypair on `hostname`" "puppet keypair for host `hostname` was in expiring on $EXPIRE_CERT. It has been updated"
         log "execution successfully. Certs updated!"
-        exit 0
+        wget --spider --no-verbose -q $REGISTRY_URL/${FQDN}/unlock
+        if [ $? -eq 0 ]; then
+            log_debug "registry unlocked"
+            exit 0
+        else
+            log "failed to unlock registry, please fix manually"
+            exit 1
+        fi
     fi
 else
     log "Nothing to do, exit"
     exit 0
 fi
-

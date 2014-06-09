@@ -1,0 +1,44 @@
+#!/bin/bash
+# lock|unlock certificate renew
+
+LOGDIR="/var/log/puppet"
+LOCKDIR="/var/run/lock/registry"
+
+. $(dirname $(realpath $0))/../lib/bash/softec-common.sh || exit
+
+if [ -z $1 ] || [ -z $2 ]; then
+    echo "\nSyntax is $0 <action> <hostname>\n"
+    log_error "Command call from user '$USERNAME' without valid parameter"
+    exit 1
+fi
+
+case "$1" in
+        lock)
+            # creates lock file if none exists
+            if [ `ls  $LOCKDIR/*.lock 2> /dev/null` ]; then
+                log_debug "called by $2 but registry is locked"
+                exit 1
+            else
+                log_debug "lock registry for $2 keypair renew"
+                LOG_TOUCH=`touch "${LOCKDIR}/${2}.lock"`
+                if [ $? -eq 0 ]; then
+                    exit 0
+                else
+                    log_error "touch ${LOCKDIR}/${2}.lock failed: $LOG_TOUCH"
+                    exit 1
+                fi
+            fi
+            ;;
+        unlock)
+            LOG_RM=`rm ${LOCKDIR}/${2}.lock`
+            if [ $? -eq 0 ]; then
+                exit 0
+            else
+                log_error "failed to rm ${LOCKDIR}/${2}.lock: $LOG_RM"
+                exit 1
+            fi
+            ;;
+        *)
+            echo $"Usage: $0 {lock|unlock} <hostname>"
+            exit 1
+esac

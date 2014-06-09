@@ -41,5 +41,14 @@ class puppet::master::utility {
     '/usr/local/sbin/puppet-cert-clean':
       source  => 'puppet:///modules/puppet/sbin/puppet-cert-clean',
       mode    => '0775';
+    '/usr/local/sbin/puppet-lock-renew':
+      source  => 'puppet:///modules/puppet/sbin/puppet-lock-renew',
+      mode    => '0775';
+  }
+
+  file {'/var/run/lock/registry':
+    ensure  => directory,
+    mode    => '0755',
+    owner   => 'puppet'
   }
 }

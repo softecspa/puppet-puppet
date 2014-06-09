@@ -1,7 +1,7 @@
 class puppet (
   $version = '',
-  )
-{
+  $day_before_renew = '30'
+) {
   # COMMON VARIABLES
   $puppet_run = '/usr/local/sbin/puppet-run'
   $puppet_cert_renew = '/usr/local/sbin/puppet-cert-renew'
