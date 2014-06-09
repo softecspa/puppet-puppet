@@ -1,0 +1,193 @@
+#!/bin/bash
+
+. /usr/local/lib/bash/softec-common.sh || exit
+
+function help()
+{
+    cat << EOF
+
+    USAGE: 
+        $0 <DAYS>
+
+    check if puppet certificate will expire in <DAYS> and request a certificate renew to the registry.
+    By default <DAYS> is 30
+
+EOF
+}
+
+function rollback() {
+    if [ -z $1 ]; then
+        echo "\nSyntax is $0 <hostname>\n"
+        log_error "Command call from user '$USERNAME' without valid parameter"
+        exit 1
+    fi
+
+    # rollback old files on registry
+    wget --no-verbose --spider -q $REGISTRY_URL/$1/rollback
+    if [ ! $? -eq 0 ]; then
+        log_error "failed to call $REGISTRY_URL/$1/rollback. Check error_log on registry"
+        exit 1
+    fi
+
+    #rollback local old files
+    find $BASE -name "$1*" -delete
+    cd $BACKUP
+    find ./ -name "$1*" -exec cp -a --parent {} ../ssl/ \;
+    find ./ -name "$1*" -delete
+
+    MAIL_TEXT=`echo -e "failed to update keypair for $1, due to the following:\n\n$2"`
+    send_mail "[PUPPETCERT] failed to update puppet keypair for host `hostname`" "$MAIL_TEXT"
+}
+
+DEBUG=0
+EXPIRE_DAYS_DEFAULT=9999
+BASE='/var/lib/puppet/ssl'
+BACKUP='/var/lib/puppet/ssl_old'
+PUPPET="/usr/bin/nice -n 10 /usr/bin/ionice -c3 /usr/bin/puppet agent"
+EXEC_OPTIONS="--no-daemonize --onetime --detailed-exitcodes --configtimeout=600 --logdest=/var/log/puppet/puppet.log --no-usecacheonfailure --noop"
+FQDN=`hostname -f`
+REGISTRY_URL='http://<%= @registry -%>'
+TMP_LOG=`mktemp`
+
+# set loglevel
+if [ $DEBUG == 1 ]; then
+    LOGLEVEL=$LOGLEVEL_DEBUG
+else
+    LOGLEVEL=$LOGLEVEL_NORMAL
+fi
+
+# set day expires
+if [ $1 ]; then
+    EXPIRE_DAYS=$1
+else
+    EXPIRE_DAYS=$EXPIRE_DAYS_DEFAULT
+    log_debug "set expire days to default: $EXPIRE_DAYS_DEFAULT"
+fi
+
+EXPIRE_CERT=`openssl x509 -enddate -in $BASE/certs/$FQDN.pem -noout | cut -d= -f2`
+log_debug "cert will expire on $EXPIRE_CERT"
+
+EXPIRE_SECONDS=`date +'%s' -d "$EXPIRE_CERT"`
+NOW_SECONDS=`date +'%s'`
+DIFF_SECONDS=$(($EXPIRE_SECONDS - $NOW_SECONDS))
+DIFF_DAYS=`expr $DIFF_SECONDS / 86400`
+log "cert will expire in ${DIFF_DAYS} days"
+
+if [ $DIFF_DAYS -le $EXPIRE_DAYS ]; then
+    log "start renew procedure"
+    if [ ! -d $BACKUP ]; then
+        mkdir $BACKUP
+        log_debug "directory $BACKUP not exists, I create it"
+    fi
+    cd $BASE
+    log "backup old files"
+    # backup old certs and key
+    find ./ -name "$FQDN*" -exec cp -a --parent {} ../ssl_old/ \;
+
+    # clean
+    find ./ -name "$FQDN*" -delete
+
+    # call registry clean
+    wget --no-verbose --spider -q $REGISTRY_URL/${FQDN}/certclean
+    if [ ! $? -eq 0 ]; then
+        log_error "failed to call $REGISTRY_URL/${FQDN}/certclean. Check error_log on registry"
+        exit 1
+    fi
+
+    # gen new files
+    log "generating new files"
+    wget --no-verbose --spider -q $REGISTRY_URL/${FQDN}/gen
+    if [ ! $? -eq 0 ]; then
+        log_error "failed to call $REGISTRY_URL/${FQDN}/gen Rollback. Check error_log on registry"
+        rollback $FQDN "Error calling $REGISTRY_URL/${FQDN}/gen"
+        exit 1
+    fi
+
+    WAIT_TIME=30
+    WAIT_COUNTER=6
+    OK_FILES=0
+    i=1
+    CERT_FILE=$BASE/certs/$FQDN.pem
+    PUBKEY_FILE=$BASE/public_keys/$FQDN.pem
+    PRIVKEY_FILE=$BASE/private_keys/$FQDN.pem
+
+    while [ $OK_FILES -lt 3 ]; do
+        OK_FILES=0
+
+        if [ $i -gt 1 ]; then
+            log "Waiting $WAIT_TIME sec. for file generation"
+            sleep $WAIT_TIME
+        fi
+
+        log "trying to get new files for the $i time..."
+
+        wget --no-verbose -q -O - $REGISTRY_URL/${FQDN}/get/cert > $CERT_FILE
+        # certificate verification
+        openssl x509 -in $CERT_FILE -text -noout &> /dev/null
+        if [ ! $? ]; then
+            log_error "Error, invalid file $CERT_FILE"
+            rm $CERT_FILE
+        else
+            log_debug "Got $CERT_FILE"
+            OK_FILES=$((OK_FILES + 1))
+        fi
+
+        wget --no-verbose -q -O - $REGISTRY_URL/${FQDN}/get/public_key > $PUBKEY_FILE 
+        if [ ! -s $PUBKEY_FILE ]; then
+            log_error "zero-sized $PUBKEY_FILE"
+            rm $PUBKEY_FILE
+        else
+            log_debug "Got $PUBKEY_FILE"
+            OK_FILES=$((OK_FILES + 1))
+        fi
+
+        wget --no-verbose -q -O - $REGISTRY_URL/${FQDN}/get/private_key > $PRIVKEY_FILE
+        # privkey verification
+        openssl rsa -in $PRIVKEY_FILE -check &> /dev/null
+        if [ ! $? ]; then
+            log_error "Error, invalid file $PRIVKEY_FILE"
+            rm $PRIVKEY_FILE
+        else
+            log_debug "Got $PRIVKEY_FILE"
+            OK_FILES=$((OK_FILES + 1))
+        fi
+
+        let i=$i+1
+        if [ $i -eq $WAIT_COUNTER ]; then
+            log "Waited too much... I'm doing rollback"
+            rollback $FQDN "error in getting new files"
+            exit
+        fi
+    done
+    # set correct permissions on certs and key
+    CHOWN_LOG=`chown puppet $CERT_FILE $PUBKEY_FILE $PRIVKEY_FILE`
+    log_debug $CHOWN_LOG
+    CHMOD_LOG=`chmod 600 $PRIVKEY_FILE`
+    log_debug $CHMOD_LOG
+    log "executing puppet"
+    /usr/bin/puppet agent $EXEC_OPTIONS
+    if [ $? -eq 1 ]; then
+        log "execution of puppet failed, calling rollback"
+        rollback $FQDN "execution of puppet agent with new keypair was failed"
+        exit 1
+    else
+        # Success, clean backup files
+        log_debug "clean"
+        # remove local backup
+        log_debug "remove local backup files"
+        find $BACKUP -type f -name "$FQDN*" -delete
+        # remove registry backup
+        log_debug "remove registry backup files"
+        wget --no-verbose --spider -q $REGISTRY_URL/$FQDN/clean
+        if [ ! $? -eq 0 ]; then
+            log_error "error calling $REGISTRY_URL/$FQDN/clean. New files are CORRECTLY generated, rollback will NOT be done"
+        fi
+        send_mail "[PUPPETCERT] updated puppet keypair on `hostname`" "puppet keypair for host `hostname` was in expiring on $EXPIRE_CERT. It has been updated"
+        log "execution successfully. Certs updated!"
+        exit 0
+    fi
+else
+    log "Nothing to do, exit"
+    exit 0
+fi
+

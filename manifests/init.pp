@@ -4,6 +4,8 @@ class puppet (
 {
   # COMMON VARIABLES
   $puppet_run = '/usr/local/sbin/puppet-run'
+  $puppet_cert_renew = '/usr/local/sbin/puppet-cert-renew'
+  $registry = $::registry_url
   $solo = '/usr/local/bin/solo -port=58140'
 
   # con -i 5 ci riprova fino a 64 minuti dopo la chiamata, con 60 secondi
@@ -147,6 +149,13 @@ class puppet (
     mode    => '0775',
     source  => 'puppet:///modules/puppet/sbin/puppet-run',
     require => Package['util-linux'],
+  }
+
+  file { $puppet_cert_renew:
+    ensure  => present,
+    owner   => 'root',
+    mode    => '0775',
+    content => template('puppet/sbin/puppet-cert-renew.erb')
   }
 
   # Pre&Post etckeeper script, pushed only if not present in official package
