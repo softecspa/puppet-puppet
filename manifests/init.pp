@@ -200,8 +200,9 @@ class puppet (
       # Fx - sposto l'intervallo del mattino a 9-13
       # Fx - 13/02/2013 - tolgo l'esecuzione del puppet al pomeriggio
 
-      $hour1 = fqdn_rand(4) + 09
-      #$hour2 = fqdn_rand(2) + 14
+      $hour1 = fqdn_rand(2) + 09
+      $hour2 = fqdn_rand(2) + 11
+      $hour3 = fqdn_rand(2) + 13
       $minute = fqdn_rand(59)
 
       cron { 'puppet-cron-onetime':
@@ -209,8 +210,7 @@ class puppet (
         user    => 'root',
         weekday => [ 1,2,3,4 ],
         minute  => [ $minute ],
-        #hour    => [ $hour1, $hour2 ],
-        hour    => [ $hour1],
+        hour    => [ $hour1, $hour2, $hour3 ],
         require => [
           File[ $puppet_run ],
           File['/var/log/puppet'],
@@ -236,6 +236,17 @@ class puppet (
           File['/usr/local/bin/solo'] ],
       }
     }
+  }
+
+  $minute_renew = fqdn_rand(59)
+  # rinnovo dei certificati
+  cron { 'puppet-cert-renew':
+    command => '/usr/local/sbin/puppet-cert-renew',
+    user    => 'root',
+    weekday => '*',
+    minute  => $minute_renew,
+    hour    => '03',
+    require => File['/usr/local/sbin/puppet-cert-renew']
   }
 
 }
