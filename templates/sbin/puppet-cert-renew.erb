@@ -63,7 +63,7 @@ function registry_lock() {
 }
 
 DEBUG=0
-EXPIRE_DAYS_DEFAULT=<%= @day_before_renew -%>
+EXPIRE_DAYS_DEFAULT='<%= @day_before_renew -%>'
 BASE='/var/lib/puppet/ssl'
 BACKUP='/var/lib/puppet/ssl_old'
 PUPPET="/usr/bin/nice -n 10 /usr/bin/ionice -c3 /usr/bin/puppet agent"
