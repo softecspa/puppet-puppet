@@ -17,7 +17,7 @@ KEYSIG=4BD6EC30
 PUPPET_MAJOR_RELEASE="2\.7.*"
 PUPPET_VERSION="2.7.23-1puppetlabs1"
 PUPPET_PACKAGES="puppet=$PUPPET_VERSION puppet-common=$PUPPET_VERSION"
-PACK="facter=1.7.5-1puppetlabs1 libaugeas-ruby augeas-lenses augeas-tools rubygems ruby-dev"
+PACK="facter=1.7.5-1puppetlabs1 libaugeas-ruby augeas-lenses augeas-tools rubygems ruby1.8-dev"
 PUPPET_PATH=/var/lib/puppet/ssl
 
 DISTRIB_CODENAME=$(lsb_release -c -s)
