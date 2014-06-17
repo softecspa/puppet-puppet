@@ -59,7 +59,9 @@ class puppet::master::gh {
     'common',
     'cron',
     'git',
-    'memcached'
+    'memcached',
+    'iptables',
+    'ispconfig_iptables'
   ]
 
   puppet::master::module{ $softec_modules:
