@@ -62,6 +62,23 @@ function registry_lock() {
     done
 }
 
+function renew_cacert() {
+    REGISTRY_CACERT_EXPIRE=`wget --no-verbose -q -O - $REGISTRY_URL/${FQDN}/CA_expire`
+    if [ $? -eq 0 ]; then
+        log_debug "ca_crt on registry expire on $REGISTRY_CACERT_EXPIRE"
+        LOCAL_CACERT_EXPIRE=`openssl x509 -enddate -in $BASE/certs/ca.pem -noout | cut -d= -f2`
+        log_debug "ca_crt on localhost expire on $LOCAL_CACERT_EXPIRE"
+        if [ ! "${REGISTRY_CACERT_EXPIRE}" == "${LOCAL_CACERT_EXPIRE}" ]; then
+            log "expiration date of CA cert is different, delete local ca.pem"
+            rm $BASE/certs/ca.pem
+        fi
+    else
+        log_error "error calling wget --no-verbose -q -O - $REGISTRY_URL/${FQDN}/CA_expire"
+        exit 1;
+    fi
+
+}
+
 DEBUG=0
 EXPIRE_DAYS_DEFAULT='<%= @day_before_renew -%>'
 BASE='/var/lib/puppet/ssl'
@@ -222,6 +239,7 @@ if [ $DIFF_DAYS -le $EXPIRE_DAYS ]; then
         fi
     fi
 else
+    renew_cacert
     log "Nothing to do, exit"
     exit 0
 fi
