@@ -61,7 +61,8 @@ class puppet::master::gh {
     'git',
     'memcached',
     'iptables',
-    'ispconfig_iptables'
+    'ispconfig_iptables',
+    'fluentd',
   ]
 
   puppet::master::module{ $softec_modules:
