@@ -63,6 +63,7 @@ class puppet::master::gh {
     'iptables',
     'ispconfig_iptables',
     'fluentd',
+    'ispconfig_logarchive',
   ]
 
   puppet::master::module{ $softec_modules:
