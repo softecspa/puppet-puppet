@@ -64,6 +64,8 @@ class puppet::master::gh {
     'ispconfig_iptables',
     'fluentd',
     'ispconfig_logarchive',
+    'ia32_libs',
+
   ]
 
   puppet::master::module{ $softec_modules:
