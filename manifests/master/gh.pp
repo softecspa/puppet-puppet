@@ -67,6 +67,8 @@ class puppet::master::gh {
     'ia32_libs',
     'backuppc',
     'softec_backuppc',
+    'adduserconf',
+    'softec_adduserconf',
   ]
 
   puppet::master::module{ $softec_modules:
