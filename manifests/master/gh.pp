@@ -65,7 +65,7 @@ class puppet::master::gh {
     'fluentd',
     'ispconfig_logarchive',
     'ia32_libs',
-
+    'softec_backuppc'
   ]
 
   puppet::master::module{ $softec_modules:
