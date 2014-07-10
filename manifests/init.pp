@@ -78,6 +78,14 @@ class puppet (
     content => "deb http://apt.puppetlabs.com ${lsbdistcodename} main\ndeb-src http://apt.puppetlabs.com ${lsbdistcodename} main\n",
   }
 
+  if $::lsbdistcodename == 'precise' {
+    # aggiungo questo ppa per precise che contiene augeas alla versione 1.0.0
+    apt::key { 'AE498453': }
+    apt::sources_list { 'augeas':
+      content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
+    }
+  }
+
   # INSTALL
   package {
     'augeas-lenses':        ensure => latest;
@@ -85,6 +93,7 @@ class puppet (
     'libaugeas-ruby':       ensure => latest;
     'libaugeas-ruby1.8':    ensure => latest;
     'rubygems':             ensure => latest;
+    'libaugeas0':           ensure => latest;
   }
 
   apt::pin {
