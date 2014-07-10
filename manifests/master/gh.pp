@@ -69,6 +69,7 @@ class puppet::master::gh {
     'softec_backuppc',
     'adduserconf',
     'softec_adduserconf',
+    'apparmor',
   ]
 
   puppet::master::module{ $softec_modules:
