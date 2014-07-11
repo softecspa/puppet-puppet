@@ -74,7 +74,8 @@ class puppet::master::gh {
     'awstools',
     'ispconfig_courier',
     'dexgate',
-    'dhclient'
+    'dhclient',
+    'dhttpd'
   ]
 
   puppet::master::module{ $softec_modules:
