@@ -75,7 +75,8 @@ class puppet::master::gh {
     'ispconfig_courier',
     'dexgate',
     'dhclient',
-    'dhttpd'
+    'dhttpd',
+    'dnsmasq'
   ]
 
   puppet::master::module{ $softec_modules:
