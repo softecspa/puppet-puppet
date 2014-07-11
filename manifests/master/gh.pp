@@ -73,7 +73,8 @@ class puppet::master::gh {
     'automysqlbackup',
     'awstools',
     'ispconfig_courier',
-    'dexgate'
+    'dexgate',
+    'dhclient'
   ]
 
   puppet::master::module{ $softec_modules:
