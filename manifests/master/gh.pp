@@ -72,7 +72,8 @@ class puppet::master::gh {
     'apparmor',
     'automysqlbackup',
     'awstools',
-    'ispconfig_courier'
+    'ispconfig_courier',
+    'dexgate'
   ]
 
   puppet::master::module{ $softec_modules:
