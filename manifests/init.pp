@@ -80,9 +80,14 @@ class puppet (
 
   if $::lsbdistcodename == 'precise' {
     # aggiungo questo ppa per precise che contiene augeas alla versione 1.0.0
-    apt::key { 'AE498453': }
-    apt::sources_list { 'augeas':
-      content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
+    #apt::key { 'AE498453': }
+    #apt::sources_list { 'augeas':
+    #  content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
+    #}
+
+    apt::ppa{'raphink/augeas':
+      key     => 'AE498453',
+      mirror  => true
     }
   }
 

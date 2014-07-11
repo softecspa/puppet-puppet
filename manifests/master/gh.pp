@@ -70,6 +70,7 @@ class puppet::master::gh {
     'adduserconf',
     'softec_adduserconf',
     'apparmor',
+    'automysqlbackup',
   ]
 
   puppet::master::module{ $softec_modules:
