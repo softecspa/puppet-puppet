@@ -71,7 +71,8 @@ class puppet::master::gh {
     'softec_adduserconf',
     'apparmor',
     'automysqlbackup',
-    'awstools'
+    'awstools',
+    'ispconfig_courier'
   ]
 
   puppet::master::module{ $softec_modules:
