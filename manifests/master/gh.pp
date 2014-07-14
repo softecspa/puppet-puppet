@@ -76,7 +76,8 @@ class puppet::master::gh {
     'dexgate',
     'dhclient',
     'dhttpd',
-    'dnsmasq'
+    'dnsmasq',
+    'etckeeper_maintenance',
   ]
 
   puppet::master::module{ $softec_modules:
