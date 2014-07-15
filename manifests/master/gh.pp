@@ -80,6 +80,7 @@ class puppet::master::gh {
     'etckeeper_maintenance',
     'fail2ban',
     'ispconfig_fail2ban',
+    'java',
   ]
 
   puppet::master::module{ $softec_modules:
