@@ -81,6 +81,7 @@ class puppet::master::gh {
     'fail2ban',
     'ispconfig_fail2ban',
     'java',
+    'softec_kvm',
   ]
 
   puppet::master::module{ $softec_modules:
@@ -97,7 +98,8 @@ class puppet::master::gh {
     'stdlib',
     'tftp',
     'vcsrepo',
-    'xinetd'
+    'xinetd',
+    'kvm'
   ]
 
   puppet::master::module { $puppetlabs_modules:
