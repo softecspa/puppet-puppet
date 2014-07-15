@@ -78,6 +78,8 @@ class puppet::master::gh {
     'dhttpd',
     'dnsmasq',
     'etckeeper_maintenance',
+    'fail2ban',
+    'ispconfig_fail2ban',
   ]
 
   puppet::master::module{ $softec_modules:
