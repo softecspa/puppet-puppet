@@ -82,6 +82,7 @@ class puppet::master::gh {
     'ispconfig_fail2ban',
     'java',
     'softec_kvm',
+    'monit'
   ]
 
   puppet::master::module{ $softec_modules:
