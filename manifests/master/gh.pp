@@ -83,6 +83,7 @@ class puppet::master::gh {
     'java',
     'softec_kvm',
     'monit',
+    'nsupdate',
   ]
 
   puppet::master::module{ $softec_modules:
