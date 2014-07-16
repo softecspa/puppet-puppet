@@ -83,8 +83,6 @@ class puppet::master::gh {
     'java',
     'softec_kvm',
     'monit',
-    'softec_nfs',
-    'nfs'
   ]
 
   puppet::master::module{ $softec_modules:
