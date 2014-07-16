@@ -84,6 +84,7 @@ class puppet::master::gh {
     'softec_kvm',
     'monit',
     'nsupdate',
+    'ntp'
   ]
 
   puppet::master::module{ $softec_modules:
