@@ -32,6 +32,7 @@ class puppet::master::gh {
     's3cmd',
     'skeleton',
     'sysctl',
+    'softec_sysctl',
     'softec',
     'supervisor',
     'swftools',
