@@ -29,6 +29,7 @@ class puppet::master::gh {
     'resolvconf',
     'rkhunter',
     'rsyslog',
+    'softec_rsyslog',
     's3cmd',
     'skeleton',
     'sysctl',
