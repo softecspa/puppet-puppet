@@ -16,11 +16,11 @@
 #   be specified in the resource name, in the format author/module-name
 #
 # [*modname*]
-#   name of the puppet module to install: this will be the name of the 
+#   name of the puppet module to install: this will be the name of the
 #   directory where module code is cloned.
 #
 # [*target*]
-#   name of the directory to which clone the module, if undef modname 
+#   name of the directory to which clone the module, if undef modname
 #   will be choosen (default: undef)
 #
 # [*target_path*]
@@ -81,7 +81,7 @@ define puppet::master::module (
   }
 
   if $author == undef {
-    validate_re($name, '[A-Za-z0-9]+/[A-Za-z0-9]+', 
+    validate_re($name, '[A-Za-z0-9]+/[A-Za-z0-9]+',
                 'name of the resource must be in the format USER/REPOSITORY')
     $name_array = split($name, '/')
     validate_array($name_array)
@@ -110,6 +110,24 @@ define puppet::master::module (
     default   => $target,
   }
 
+  $ensure_vcsrepo = $updated? {
+    true  => 'latest',
+    false => 'present'
+  }
+
+  $revision_vcsrepo = $updated? {
+    true  => 'master',
+    false => undef
+  }
+
+  vcsrepo { "${target_path_}/${target_}":
+    ensure    => $ensure_vcsrepo,
+    provider  => git,
+    source    => "https://github.com/${real_user}/${real_repo}.git",
+    revision  => $revision_vcsrepo
+  }
+
+
   git::clone{ "clone-$name":
     url   => "https://github.com/${real_user}/${real_repo}.git",
     path  => "${target_path_}/${target_}",
@@ -118,7 +136,7 @@ define puppet::master::module (
   if $updated {
     git::pull{ "pull-$name":
       path  => "${target_path_}/${target_}",
-    }  
+    }
   }
 
 }

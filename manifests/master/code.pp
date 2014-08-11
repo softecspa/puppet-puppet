@@ -6,7 +6,9 @@
 #
 # === Examples
 #
-class puppet::master::code {
+class puppet::master::code (
+  $autoupdate  = true
+){
 
   file {
     '/etc/puppet/envs/development':  ensure  => directory;
@@ -31,6 +33,8 @@ class puppet::master::code {
     ]
   }
 
-  include puppet::master::gh
+  class {'puppet::master::gh':
+    autoupdate  => $autoupdate
+  }
 
 }

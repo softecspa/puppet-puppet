@@ -6,7 +6,9 @@
 #
 # === Examples
 #
-class puppet::master::gh {
+class puppet::master::gh (
+  $autoupdate,
+){
   # all repos reside on softec account
   Puppet::Master::Module {
     author  => 'softecspa',
@@ -90,7 +92,7 @@ class puppet::master::gh {
   ]
 
   puppet::master::module{ $softec_modules:
-    updated => true,
+    updated => $autoupdate,
   }
 
   ## PuppetLabs modules
