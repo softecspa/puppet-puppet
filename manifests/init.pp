@@ -87,7 +87,7 @@ class puppet (
 
     apt::ppa{'raphink/augeas-1.0.0':
       key     => 'AE498453',
-      mirror  => true
+      #mirror  => true
     }
   }
 
