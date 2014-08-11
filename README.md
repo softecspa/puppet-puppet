@@ -1,6 +1,8 @@
 puppet-puppet
 =============
 
+....
+
 puppet module
 
 Configurazione di Puppet

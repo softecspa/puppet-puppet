@@ -85,7 +85,7 @@ class puppet (
     #  content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
     #}
 
-    apt::ppa{'raphink/augeas':
+    apt::ppa{'raphink/augeas-1.0.0':
       key     => 'AE498453',
       mirror  => true
     }

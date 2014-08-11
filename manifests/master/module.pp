@@ -128,15 +128,15 @@ define puppet::master::module (
   }
 
 
-  git::clone{ "clone-$name":
-    url   => "https://github.com/${real_user}/${real_repo}.git",
-    path  => "${target_path_}/${target_}",
-  }
+  #git::clone{ "clone-$name":
+  #  url   => "https://github.com/${real_user}/${real_repo}.git",
+  #  path  => "${target_path_}/${target_}",
+  #}
 
-  if $updated {
-    git::pull{ "pull-$name":
-      path  => "${target_path_}/${target_}",
-    }
-  }
+  #if $updated {
+  #  git::pull{ "pull-$name":
+  #    path  => "${target_path_}/${target_}",
+  #  }
+  #}
 
 }
