@@ -108,7 +108,7 @@ class puppet::master(
   if ($ensure in ['present', 'latest'])
   {
     apt::pin {'puppetdb-terminus':
-      package   => 'puppetdb-terminus',
+      packages  => 'puppetdb-terminus',
       version   => $puppet::puppetdb::puppetdb_version,
       priority  => '1001'
     }->
