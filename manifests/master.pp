@@ -66,10 +66,10 @@ class puppet::master(
   }
 
   # Packages
-  apt::pin {
-    'puppetmaster-common':    version => $puppet::puppet_version;
-    'puppetmaster-passenger': version => $puppet::puppet_version;
-    'puppetmaster':           version => $puppet::puppet_version;
+  apt_puppetlabs::pin { 'puppetmaster':
+    packages  => [ 'puppetmaster-common', 'puppetmaster-passenger', 'puppetmaster'],
+    version   => $puppet::puppet_version,
+    priority  => '1001'
   }->
   package {
     'puppetmaster-common':    ensure => $puppet::puppet_version;
@@ -107,8 +107,10 @@ class puppet::master(
 
   if ($ensure in ['present', 'latest'])
   {
-    apt::pin {
-      'puppetdb-terminus':    version => $puppet::puppetdb::puppetdb_version;
+    apt_puppetlabs::pin {'puppetdb-terminus':
+      package   => 'puppetdb-terminus',
+      version   => $puppet::puppetdb::puppetdb_version,
+      priority  => '1001'
     }->
     package {
       'puppetdb-terminus':    ensure => $puppet::puppetdb::puppetdb_version;

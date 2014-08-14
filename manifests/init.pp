@@ -21,11 +21,11 @@ class puppet (
   }
 
   Package {
-    require => [ Class['apt'], Apt::Sources_list['puppetlabs'] ],
+    require => [ Class['apt_puppetlabs'], Apt_puppetlabs::Source['puppetlabs'] ],
   }
 
   # clean old unused repository
-  apt::sources_list { 'puppet': ensure  => absent, }
+  apt_puppetlabs::source { 'puppet': ensure  => absent, }
 
   case $lsbdistcodename {
     'hardy' : {
@@ -40,7 +40,10 @@ class puppet (
       # Da questo repository prendiamo alcuni pacchetti di puppet,
       # tra cui libaugeas-ruby1.8 che è
       # rotto nel repo di puppetlabs per hardy e lucid
-      apt::ppa { 'skettler/puppet':  key => 'C18789EA', mirror => true }
+      softec_apt::ppa{'skettler/puppet':
+        key     => 'C18789EA',
+        mirror  => true
+      }
     }
 
     'lucid': {
@@ -55,7 +58,11 @@ class puppet (
       # Da questo repository prendiamo alcuni pacchetti di puppet,
       # tra cui libaugeas-ruby1.8 che è
       # rotto nel repo di puppetlabs per hardy e lucid
-      apt::ppa { 'skettler/puppet':  key => 'C18789EA', mirror => true }
+      softec_apt::ppa {'skettler/puppet':
+        mirror  => true,
+        key     => 'C18789EA'
+      }
+
     }
 
     default: {
@@ -73,9 +80,10 @@ class puppet (
     default => $version
   }
 
-  apt::key { '4BD6EC30': }
-  apt::sources_list { 'puppetlabs':
-    content => "deb http://apt.puppetlabs.com ${lsbdistcodename} main\ndeb-src http://apt.puppetlabs.com ${lsbdistcodename} main\n",
+  apt_puppetlabs::source {'puppetlabs':
+    location  => 'http://apt.puppetlabs.com',
+    repos     => 'main',
+    key       => '4BD6EC30',
   }
 
   if $::lsbdistcodename == 'precise' {
@@ -85,7 +93,7 @@ class puppet (
     #  content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
     #}
 
-    apt::ppa{'raphink/augeas-1.0.0':
+    softec_apt::ppa {'raphink/augeas-1.0.0':
       key     => 'AE498453',
       mirror  => true
     }
@@ -101,10 +109,14 @@ class puppet (
     'libaugeas0':           ensure => latest;
   }
 
-  apt::pin {
-    'puppet':               version => $puppet_version;
-    'puppet-common':        version => $puppet_version;
-    'facter':               version => $facter_version;
+  apt_puppetlabs::pin { 'puppet':
+    packages  => [ 'puppet', 'puppet-common' ],
+    version   => $puppet_version,
+    priority  => '1001';
+  'facter':
+    packages  => 'facter',
+    version   => $facter_version,
+    priority  => '1001'
   } ->
   package {
     'puppet':               ensure => $puppet_version;

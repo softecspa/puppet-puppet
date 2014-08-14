@@ -45,8 +45,10 @@ class puppet::puppetdb(
 
   $puppetdb_version = '1.6.2-1puppetlabs1'
 
-  apt::pin {
-    'puppetdb':  version => $puppetdb_version
+  apt_puppetlabs::pin {'puppetdb':
+    packages  => 'puppetdb',
+    version   => $puppetdb_version,
+    priority  => '1001'
   }->
   package { 'puppetdb':
     ensure => $puppetdb_version,
