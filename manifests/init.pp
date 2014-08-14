@@ -21,11 +21,11 @@ class puppet (
   }
 
   Package {
-    require => [ Class['apt_puppetlabs'], Apt_puppetlabs::Source['puppetlabs'] ],
+    require => [ Class['apt'], Apt_puppetlabs::Source['puppetlabs'] ],
   }
 
   # clean old unused repository
-  apt_puppetlabs::source { 'puppet': ensure  => absent, }
+  apt::source { 'puppet': ensure  => absent, }
 
   case $lsbdistcodename {
     'hardy' : {
@@ -80,7 +80,7 @@ class puppet (
     default => $version
   }
 
-  apt_puppetlabs::source {'puppetlabs':
+  apt::source {'puppetlabs':
     location  => 'http://apt.puppetlabs.com',
     repos     => 'main',
     key       => '4BD6EC30',
@@ -109,7 +109,7 @@ class puppet (
     'libaugeas0':           ensure => latest;
   }
 
-  apt_puppetlabs::pin { 'puppet':
+  apt::pin { 'puppet':
     packages  => [ 'puppet', 'puppet-common' ],
     version   => $puppet_version,
     priority  => '1001';

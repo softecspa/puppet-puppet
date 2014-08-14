@@ -57,7 +57,7 @@ class puppet::master::gh (
     'hostname',
     'devutils',
     'basepackages',
-    'apt',
+    'softec_apt',
     'softecscripts',
     'apache2',
     'common',
@@ -106,7 +106,8 @@ class puppet::master::gh (
     'tftp',
     'vcsrepo',
     'xinetd',
-    'kvm'
+    'kvm',
+    'apt'
   ]
 
   puppet::master::module { $puppetlabs_modules:
