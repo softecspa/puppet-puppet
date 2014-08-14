@@ -21,7 +21,7 @@ class puppet (
   }
 
   Package {
-    require => [ Class['apt'], Apt_puppetlabs::Source['puppetlabs'] ],
+    require => [ Class['apt'], Apt::Source['puppetlabs'] ],
   }
 
   # clean old unused repository
