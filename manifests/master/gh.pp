@@ -92,6 +92,7 @@ class puppet::master::gh (
     'postfix',
     'softec_postfix',
     'ispconfig_postfix',
+    'subversion',
   ]
 
   puppet::master::module{ $softec_modules:
