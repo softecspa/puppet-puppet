@@ -88,7 +88,10 @@ class puppet::master::gh (
     'softec_kvm',
     'monit',
     'nsupdate',
-    'ntp'
+    'ntp',
+    'postfix',
+    'softec_postfix',
+    'ispconfig_postfix',
   ]
 
   puppet::master::module{ $softec_modules:
