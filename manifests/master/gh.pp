@@ -94,7 +94,9 @@ class puppet::master::gh (
     'ispconfig_postfix',
     'subversion',
     'nfs',
-    'softec_nfs'
+    'softec_nfs',
+    'proftpd',
+    'ispconfig_proftpd'
   ]
 
   puppet::master::module{ $softec_modules:
