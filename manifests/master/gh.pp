@@ -97,6 +97,7 @@ class puppet::master::gh (
     'softec_nfs',
     'proftpd',
     'ispconfig_proftpd',
+    'sudo',
     'softec_sudo'
   ]
 
@@ -117,7 +118,6 @@ class puppet::master::gh (
     'xinetd',
     'kvm',
     'apt',
-    'sudo'
   ]
 
   puppet::master::module { $puppetlabs_modules:
