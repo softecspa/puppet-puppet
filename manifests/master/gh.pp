@@ -118,6 +118,7 @@ class puppet::master::gh (
     'xinetd',
     'kvm',
     'apt',
+    'concat',
   ]
 
   puppet::master::module { $puppetlabs_modules:
@@ -126,7 +127,6 @@ class puppet::master::gh (
 
   ## Third-party forked modules
   $third_party_modules = [
-    'concat', # vecchio modulo, prenderlo da forge
     'datadog',
     'etckeeper',
     'mysql_mmm',
