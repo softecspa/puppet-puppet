@@ -98,7 +98,10 @@ class puppet::master::gh (
     'proftpd',
     'ispconfig_proftpd',
     'sudo',
-    'softec_sudo'
+    'softec_sudo',
+    'nginx',
+    'sslterminus',
+    'locales',
   ]
 
   puppet::master::module{ $softec_modules:
