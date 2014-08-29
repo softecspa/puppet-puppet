@@ -103,7 +103,9 @@ class puppet::master::gh (
     'sslterminus',
     'locales',
     'ssh',
-    'softec_ssh'
+    'softec_ssh',
+    'apt',
+    'ispconfig_apc'
   ]
 
   puppet::master::module{ $softec_modules:
