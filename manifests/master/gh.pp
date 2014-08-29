@@ -102,6 +102,8 @@ class puppet::master::gh (
     'nginx',
     'sslterminus',
     'locales',
+    'ssh',
+    'softec_ssh'
   ]
 
   puppet::master::module{ $softec_modules:
