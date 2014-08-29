@@ -104,8 +104,9 @@ class puppet::master::gh (
     'locales',
     'ssh',
     'softec_ssh',
-    'apt',
-    'ispconfig_apc'
+    'apc',
+    'ispconfig_apc',
+    'perl'
   ]
 
   puppet::master::module{ $softec_modules:
