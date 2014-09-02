@@ -267,7 +267,7 @@ class puppet (
   $minute_renew = fqdn_rand(59)
   # rinnovo dei certificati
   cron { 'puppet-cert-renew':
-    command => '/usr/local/sbin/puppet-cert-renew &> /dev/null',
+    command => '/usr/local/sbin/puppet-cert-renew > /dev/null',
     user    => 'root',
     weekday => '*',
     minute  => $minute_renew,
