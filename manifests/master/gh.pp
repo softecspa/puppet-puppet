@@ -51,7 +51,6 @@ class puppet::master::gh (
     'ispconfig_zookeeper',
     'puppet',
     'php5',
-    'mysql',
     'pecl',
     'logrotate',
     'hostname',
@@ -106,7 +105,8 @@ class puppet::master::gh (
     'softec_ssh',
     'apc',
     'ispconfig_apc',
-    'perl'
+    'perl',
+    'softec_mysql'
   ]
 
   puppet::master::module{ $softec_modules:
@@ -127,6 +127,7 @@ class puppet::master::gh (
     'kvm',
     'apt',
     'concat',
+    'mysql'
   ]
 
   puppet::master::module { $puppetlabs_modules:
