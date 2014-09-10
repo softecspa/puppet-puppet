@@ -106,7 +106,8 @@ class puppet::master::gh (
     'apc',
     'ispconfig_apc',
     'perl',
-    'softec_mysql'
+    'softec_mysql',
+    'boto',
   ]
 
   puppet::master::module{ $softec_modules:
