@@ -108,6 +108,7 @@ class puppet::master::gh (
     'perl',
     'softec_mysql',
     'boto',
+    'rclocal',
   ]
 
   puppet::master::module{ $softec_modules:
