@@ -158,4 +158,15 @@ class puppet::master::gh (
     prefix => '',
   }
 
+  #Private_module on gitlab
+  $gitlab_modules = [
+    'sslcert'
+  ]
+
+  puppet::master::module { $gitlab_modules:
+    author  => 'ops',
+    server  => 'git.sftc.it',
+    method  => 'ssh',
+    identity  => '/etc/ssl/private/code_reader_key.key'
+  }
 }

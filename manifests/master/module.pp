@@ -73,6 +73,11 @@ define puppet::master::module (
   $target = undef,
   $target_path = undef,
   $updated = false,
+  $server = 'github.com',
+  $auth_user = undef,
+  $auth_pass = undef,
+  $method     = 'https',
+  $identity = undef
 )
 {
   $target_path_ = $target_path ? {
@@ -120,13 +125,18 @@ define puppet::master::module (
     false => undef
   }
 
-  vcsrepo { "${target_path_}/${target_}":
-    ensure    => $ensure_vcsrepo,
-    provider  => git,
-    source    => "https://github.com/${real_user}/${real_repo}.git",
-    revision  => $revision_vcsrepo
+  $source_url = $method?{
+    'https' => "https://${server}/${real_user}/${real_repo}.git",
+    'ssh'   => "git@${server}:${real_user}/${real_repo}.git"
   }
 
+  vcsrepo { "${target_path_}/${target_}":
+    ensure              => $ensure_vcsrepo,
+    provider            => git,
+    source              => $source_url,
+    revision            => $revision_vcsrepo,
+    identity            => $identity
+  }
 
   #git::clone{ "clone-$name":
   #  url   => "https://github.com/${real_user}/${real_repo}.git",
