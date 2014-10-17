@@ -110,6 +110,7 @@ class puppet::master::gh (
     'boto',
     'rclocal',
     'ispconfig_httpd_logs',
+    'ispconfig_memcached',
   ]
 
   puppet::master::module{ $softec_modules:
