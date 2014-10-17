@@ -109,6 +109,7 @@ class puppet::master::gh (
     'softec_mysql',
     'boto',
     'rclocal',
+    'ispconfig_httpd_logs',
   ]
 
   puppet::master::module{ $softec_modules:
