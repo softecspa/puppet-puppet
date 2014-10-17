@@ -111,6 +111,7 @@ class puppet::master::gh (
     'rclocal',
     'ispconfig_httpd_logs',
     'ispconfig_memcached',
+    'ispconfig_packages',
   ]
 
   puppet::master::module{ $softec_modules:
