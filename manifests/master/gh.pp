@@ -112,6 +112,8 @@ class puppet::master::gh (
     'ispconfig_httpd_logs',
     'ispconfig_memcached',
     'ispconfig_packages',
+    'ispconfig_postfix_graph',
+    'postfix_graph'
   ]
 
   puppet::master::module{ $softec_modules:
