@@ -167,7 +167,8 @@ class puppet::master::gh (
 
   #Private_module on gitlab
   $gitlab_modules = [
-    'sslcert'
+    'sslcert',
+    'ispconfig_cluster',
   ]
 
   puppet::master::module { $gitlab_modules:
