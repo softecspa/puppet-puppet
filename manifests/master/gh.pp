@@ -170,6 +170,7 @@ class puppet::master::gh (
     'sslcert',
     'ispconfig_cluster',
     'ispconfig_files',
+    'ispconfig_master',
   ]
 
   puppet::master::module { $gitlab_modules:
