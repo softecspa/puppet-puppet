@@ -172,7 +172,8 @@ class puppet::master::gh (
     'ispconfig_files',
     'ispconfig_master',
     'ispconfig_slave',
-    'ispconfig_tomcat'
+    'ispconfig_tomcat',
+    'tomcat'
   ]
 
   puppet::master::module { $gitlab_modules:
