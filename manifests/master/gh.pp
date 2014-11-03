@@ -116,7 +116,8 @@ class puppet::master::gh (
     'postfix_graph',
     'ispconfig_zendopcache',
     'softec_mylvmbackup',
-    'ispconfig_named'
+    'ispconfig_named',
+    'nrpe'
   ]
 
   puppet::master::module{ $softec_modules:
