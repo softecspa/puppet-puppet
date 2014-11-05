@@ -184,7 +184,8 @@ class puppet::master::gh (
     'sia',
     'softec_private',
     'skeleton',
-    'onepub'
+    'onepub',
+    'drupal'
   ]
 
   puppet::master::module { $gitlab_modules:
