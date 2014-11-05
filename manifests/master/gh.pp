@@ -183,7 +183,8 @@ class puppet::master::gh (
     'softec_registry',
     'sia',
     'softec_private',
-    'skeleton'
+    'skeleton',
+    'onepub'
   ]
 
   puppet::master::module { $gitlab_modules:
