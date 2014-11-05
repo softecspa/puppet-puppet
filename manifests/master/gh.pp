@@ -117,7 +117,8 @@ class puppet::master::gh (
     'softec_mylvmbackup',
     'ispconfig_named',
     'nrpe',
-    'softec_xen'
+    'softec_xen',
+    'nagios'
   ]
 
   puppet::master::module{ $softec_modules:
