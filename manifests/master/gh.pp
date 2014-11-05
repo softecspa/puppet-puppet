@@ -182,7 +182,8 @@ class puppet::master::gh (
     'ispconfig_mirror',
     'varnish',
     'softec_registry',
-    'sia'
+    'sia',
+    'softec_private'
   ]
 
   puppet::master::module { $gitlab_modules:
