@@ -33,7 +33,6 @@ class puppet::master::gh (
     'rsyslog',
     'softec_rsyslog',
     's3cmd',
-    'skeleton',
     'sysctl',
     'softec_sysctl',
     'softec',
@@ -183,7 +182,8 @@ class puppet::master::gh (
     'varnish',
     'softec_registry',
     'sia',
-    'softec_private'
+    'softec_private',
+    'skeleton'
   ]
 
   puppet::master::module { $gitlab_modules:
