@@ -180,7 +180,8 @@ class puppet::master::gh (
     'ispconfig_tomcat',
     'tomcat',
     'ispconfig_mirror',
-    'varnish'
+    'varnish',
+    'softec_registry'
   ]
 
   puppet::master::module { $gitlab_modules:
