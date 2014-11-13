@@ -43,7 +43,7 @@ class puppet::puppetdb(
     fail('db_type parameter must be one of hsqldb or postgresql')
   }
 
-  $puppetdb_version = '1.6.2-1puppetlabs1'
+  $puppetdb_version = '2.2.2-1puppetlabs1'
 
   apt::pin {'puppetdb':
     packages  => 'puppetdb',
@@ -68,13 +68,13 @@ class puppet::puppetdb(
     notify  => Service["puppetdb"]
   }
 
-  file { "puppetdb-jetty-ini":
-    path    => "/etc/puppetdb/conf.d/jetty.ini",
-    owner   => 'puppetdb',
-    group   => 'puppetdb',
-    mode    => '0640',
-    content => template('puppet/puppetdb/jetty.ini.erb'),
-    notify  => Service["puppetdb"]
-  }
+  #file { "puppetdb-jetty-ini":
+  #  path    => "/etc/puppetdb/conf.d/jetty.ini",
+  #  owner   => 'puppetdb',
+  #  group   => 'puppetdb',
+  #  mode    => '0640',
+  #  content => template('puppet/puppetdb/jetty.ini.erb'),
+  #  notify  => Service["puppetdb"]
+  #}
 
 }
