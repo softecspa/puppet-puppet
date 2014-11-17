@@ -27,7 +27,7 @@ class puppet (
   # clean old unused repository
   apt::source { 'puppet': ensure  => absent, }
 
-  case $lsbdistcodename {
+  case $::lsbdistcodename {
     'hardy' : {
       $puppet_env_version = $environment ? {
         'production'  => '2.7.18-1puppetlabs1',
@@ -46,44 +46,27 @@ class puppet (
       }
     }
 
-    'lucid': {
-      $puppet_env_version = $environment ? {
-        'production'  => '2.7.23-1puppetlabs1',
-        default       => '2.7.23-1puppetlabs1',
-      }
-
-      $facter_version = '1.7.5-1puppetlabs1'
-
-      # for latest facter & augeas packages
-      # Da questo repository prendiamo alcuni pacchetti di puppet,
-      # tra cui libaugeas-ruby1.8 che è
-      # rotto nel repo di puppetlabs per hardy e lucid
-      softec_apt::ppa {'skettler/puppet':
-        mirror  => true,
-        key     => 'C18789EA'
-      }
-
-    }
-
     default: {
-      $puppet_env_version = $environment ? {
-        'production'  => '2.7.23-1puppetlabs1',
-        default       => '2.7.23-1puppetlabs1',
+      $puppet_env_version = '3.7.3-1puppetlabs1'
+      $facter_version = '2.3.0-1puppetlabs1'
+
+      apt::source {'puppetlabs':
+        location  => 'http://apt.puppetlabs.com',
+        repos     => 'main',
+        key       => '4BD6EC30',
+      }
+      apt::source {'puppetlabs-deps':
+        location  => 'http://apt.puppetlabs.com',
+        repos     => 'dependencies',
+        key       => '4BD6EC30',
       }
 
-      $facter_version = '1.7.5-1puppetlabs1'
     }
   }
 
   $puppet_version = $version ? {
     ''      => $puppet_env_version,
     default => $version
-  }
-
-  apt::source {'puppetlabs':
-    location  => 'http://apt.puppetlabs.com',
-    repos     => 'main',
-    key       => '4BD6EC30',
   }
 
   if $::lsbdistcodename == 'precise' {
@@ -97,6 +80,26 @@ class puppet (
       key     => 'AE498453',
       #mirror  => true
     }
+
+    softec_apt::ppa {'brightbox/ruby-ng':
+      key => 'C3173AA6'
+    } ->
+
+    package{
+      'ruby1.9.1':    ensure => present;
+      'ruby-switch':  ensure => present;
+    } ->
+
+    exec {'switch ruby1.9.1':
+      command => 'ruby-switch --set ruby1.9.1',
+      unless  => 'ruby-switch --check | grep Currently | awk \'{print $3}\' | grep \'ruby1.9.1\''
+    }
+
+  }
+
+  $libaugeas_ruby_v = $::lsbdistcodename? {
+    'lucid' => 'libaugeas-ruby1.8',
+    default => 'libaugeas-ruby1.9.1'
   }
 
   # INSTALL
@@ -104,7 +107,7 @@ class puppet (
     'augeas-lenses':        ensure => latest;
     'augeas-tools':         ensure => latest;
     'libaugeas-ruby':       ensure => latest;
-    'libaugeas-ruby1.8':    ensure => latest;
+    $libaugeas_ruby_v:      ensure => latest;
     'rubygems':             ensure => latest;
     'libaugeas0':           ensure => latest;
   }
@@ -133,6 +136,7 @@ class puppet (
     ensure  => present,
     require => Package['augeas-lenses'],
     source  => 'puppet:///modules/puppet/ssh.aug',
+    owner   => 'root'
   }
 
   file { '/var/log/puppet':
