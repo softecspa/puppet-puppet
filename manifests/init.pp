@@ -86,8 +86,9 @@ class puppet (
     } ->
 
     package{
-      'ruby1.9.1':    ensure => present;
-      'ruby-switch':  ensure => present;
+      'ruby1.9.1':      ensure => present;
+      'ruby1.9.1-dev':  ensure => present;
+      'ruby-switch':    ensure => present;
     } ->
 
     exec {'switch ruby1.9.1':
