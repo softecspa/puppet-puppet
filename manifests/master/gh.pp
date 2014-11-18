@@ -118,7 +118,8 @@ class puppet::master::gh (
     'ispconfig_named',
     'nrpe',
     'softec_xen',
-    'nagios'
+    'nagios',
+    'softec_newrelic'
   ]
 
   puppet::master::module{ $softec_modules:
