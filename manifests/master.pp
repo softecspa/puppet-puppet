@@ -190,11 +190,19 @@ class puppet::master(
   if (!$private_repos) or (!$private_repos_author) or (!$private_repos_key) {
     fail('specifify params for private_repos')
   }
-  
+
   vcsrepo {'/etc/puppet/nodes':
     ensure    => latest,
     provider  => git,
     source    => "git@${private_repos}:${private_repos_author}/puppet-nodes.git",
+    revision  => 'master',
+    identity  => $private_repos_key
+  }
+
+  vcsrepo {'/etc/puppet/roles':
+    ensure    => latest,
+    provider  => git,
+    source    => "git@${private_repos}:${private_repos_author}/puppet-roles.git",
     revision  => 'master',
     identity  => $private_repos_key
   }
