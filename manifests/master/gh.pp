@@ -12,6 +12,7 @@ class puppet::master::gh (
   # all repos reside on softec account
   Puppet::Master::Module {
     author  => 'softecspa',
+    updated => $autoupdate,
   }
 
   ## Softec modules
@@ -122,9 +123,7 @@ class puppet::master::gh (
     'softec_newrelic'
   ]
 
-  puppet::master::module{ $softec_modules:
-    updated => $autoupdate,
-  }
+  puppet::master::module{ $softec_modules: }
 
   ## PuppetLabs modules
   $puppetlabs_modules = [
