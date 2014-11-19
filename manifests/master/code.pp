@@ -34,7 +34,11 @@ class puppet::master::code (
   }
 
   class {'puppet::master::gh':
-    autoupdate  => $autoupdate
+    autoupdate  => $autoupdate,
+  }
+
+  class {'puppet::master::private_modules':
+    autoupdate  => $autoupdate,
   }
 
 }

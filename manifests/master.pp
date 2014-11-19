@@ -41,7 +41,10 @@ class puppet::master(
   $reports = "puppetdb, datadog_reports",
   $version = '',
   $master,
-  $ca
+  $ca,
+  $private_repos = undef,
+  $private_repos_author = undef,
+  $private_repos_key    = undef,
   )
 {
   validate_bool($autosign)
@@ -182,5 +185,17 @@ class puppet::master(
   #pulizia del bucket
   tmpreaper::daily{ '/var/lib/puppet/bucket/':
     time  => '30d',
+  }
+
+  if (!$private_repos) or (!$private_repos_author) or (!$private_repos_key) {
+    fail('specifify params for private_repos')
+  }
+  
+  vcsrepo {'/etc/puppet/nodes':
+    ensure    => latest,
+    provider  => git,
+    source    => "git@${private_repos}:${private_repos_author}/puppet-nodes.git",
+    revision  => 'master',
+    identity  => $private_repos_key
   }
 }

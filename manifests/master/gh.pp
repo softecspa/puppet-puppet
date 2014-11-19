@@ -171,30 +171,4 @@ class puppet::master::gh (
     prefix => '',
   }
 
-  #Private_module on gitlab
-  $gitlab_modules = [
-    'sslcert',
-    'ispconfig_cluster',
-    'ispconfig_files',
-    'ispconfig_master',
-    'ispconfig_slave',
-    'ispconfig_tomcat',
-    'tomcat',
-    'ispconfig_mirror',
-    'varnish',
-    'softec_registry',
-    'sia',
-    'softec_private',
-    'skeleton',
-    'onepub',
-    'drupal',
-    'accounts',
-  ]
-
-  puppet::master::module { $gitlab_modules:
-    author  => 'ops',
-    server  => 'git.sftc.it',
-    method  => 'ssh',
-    identity  => '/etc/ssl/private/code_reader_key.key'
-  }
 }
