@@ -10,7 +10,6 @@ class puppet::master::private_modules (
   $autoupdate,
   $private_repos,
   $private_repos_author,
-  $private_repos_key
 ){
   # all repos reside on softec account
 
@@ -37,7 +36,5 @@ class puppet::master::private_modules (
     updated     => $autoupdate,
     author      => $private_repos_author,
     server      => $private_repos,
-    method      => 'ssh',
-    identity    => $private_repos_key,
   }
 }
