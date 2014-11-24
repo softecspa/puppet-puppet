@@ -30,6 +30,7 @@ class puppet::master::private_modules (
     'onepub',
     'drupal',
     'accounts',
+    'generic_account',
     'antandra_app'
   ]
 
