@@ -121,7 +121,8 @@ class puppet::master::gh (
     'nrpe',
     'softec_xen',
     'nagios',
-    'softec_newrelic'
+    'softec_newrelic',
+    'wget'
   ]
 
   puppet::master::module{ $softec_modules: }
