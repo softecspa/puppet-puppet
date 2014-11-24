@@ -34,6 +34,7 @@ class puppet::master::gh (
     'rsyslog',
     'softec_rsyslog',
     's3cmd',
+    'memcache',
     'sysctl',
     'softec_sysctl',
     'softec',
