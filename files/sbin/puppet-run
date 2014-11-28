@@ -120,7 +120,7 @@ while [ $COUNTER -le $MAX_ATTEMPTS ]; do
         continue
     fi
 
-    $PUPPET $EXEC_OPTIONS --logdest=$OUTPUT_LOGFILE 2>> $ERROR_LOGFILE
+    $PUPPET $EXEC_OPTIONS --logdest=$OUTPUT_LOGFILE
     case $? in
         0)
             log "agent returned 0: nothing done"
