@@ -123,7 +123,8 @@ class puppet::master::gh (
     'softec_xen',
     'nagios',
     'softec_newrelic',
-    'wget'
+    'wget',
+    'hpsdr'
   ]
 
   puppet::master::module{ $softec_modules: }
