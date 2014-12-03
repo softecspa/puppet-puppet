@@ -61,6 +61,10 @@ class puppet (
         key       => '4BD6EC30',
       }
 
+      softec_apt::ppa{'skettler/puppet':
+        key     => 'C18789EA',
+        mirror  => true
+      }
     }
   }
 
