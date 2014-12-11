@@ -14,15 +14,15 @@ class puppet::master::puppet_doc {
     command => '/usr/local/sbin/puppet-make-doc',
   }
 
-  $web_dirs = ['/var/www/puppet-doc.tools.softecspa.it',       
+  $web_dirs = ['/var/www/puppet-doc.tools.softecspa.it',
               '/var/www/puppet-doc.tools.softecspa.it/web']
-  
+
   file { $web_dirs:
     ensure  => directory;
-  }
+  } ->
 
-  apache2::vhost { 'puppet-doc.tools.softecspa.it':
-    document_root   => '/var/www/puppet-doc.tools.softecspa.it/web'
+  apache::vhost { 'puppet-doc.tools.softecspa.it':
+    docroot   => '/var/www/puppet-doc.tools.softecspa.it/web'
   }
 
 }

@@ -27,44 +27,39 @@ class puppet (
   # clean old unused repository
   apt::source { 'puppet': ensure  => absent, }
 
+  
+
   case $::lsbdistcodename {
     'hardy' : {
       $puppet_env_version = $environment ? {
         'production'  => '2.7.18-1puppetlabs1',
         default       => '2.7.20~hardy~ppa1',
       }
-
       $facter_version = '1.6.18~lucid~ppa1'
-
-      # for latest puppet, facter & augeas packages
-      # Da questo repository prendiamo alcuni pacchetti di puppet,
-      # tra cui libaugeas-ruby1.8 che è
-      # rotto nel repo di puppetlabs per hardy e lucid
-      softec_apt::ppa{'skettler/puppet':
-        key     => 'C18789EA',
-        mirror  => true
-      }
     }
 
     default: {
       $puppet_env_version = '3.7.3-1puppetlabs1'
       $facter_version = '2.3.0-1puppetlabs1'
+    }
+  }
 
-      apt::source {'puppetlabs':
-        location  => 'http://apt.puppetlabs.com',
-        repos     => 'main',
-        key       => '4BD6EC30',
-      }
-      apt::source {'puppetlabs-deps':
-        location  => 'http://apt.puppetlabs.com',
-        repos     => 'dependencies',
-        key       => '4BD6EC30',
-      }
+  apt::source {'puppetlabs':
+    location  => 'http://apt.puppetlabs.com',
+    repos     => 'main',
+    key       => '4BD6EC30',
+  }
+  apt::source {'puppetlabs-deps':
+    location  => 'http://apt.puppetlabs.com',
+    repos     => 'dependencies',
+    key       => '4BD6EC30',
+  }
 
-      softec_apt::ppa{'skettler/puppet':
-        key     => 'C18789EA',
-        mirror  => true
-      }
+  # for latest augeas packages. Not for trusty
+  if $::lsbdistcodename != 'trusty' {
+    softec_apt::ppa{'skettler/puppet':
+      key     => 'C18789EA',
+      mirror  => true
     }
   }
 
