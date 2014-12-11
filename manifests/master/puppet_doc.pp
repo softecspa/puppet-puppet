@@ -19,10 +19,10 @@ class puppet::master::puppet_doc {
 
   file { $web_dirs:
     ensure  => directory;
-  } ->
+  }
 
-  apache::vhost { 'puppet-doc.tools.softecspa.it':
-    docroot   => '/var/www/puppet-doc.tools.softecspa.it/web'
+  apache2::vhost { 'puppet-doc.tools.softecspa.it':
+    document_root   => '/var/www/puppet-doc.tools.softecspa.it/web'
   }
 
 }
