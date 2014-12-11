@@ -27,7 +27,7 @@ class puppet (
   # clean old unused repository
   apt::source { 'puppet': ensure  => absent, }
 
-  
+
 
   case $::lsbdistcodename {
     'hardy' : {
@@ -101,6 +101,10 @@ class puppet (
     'lucid' => 'libaugeas-ruby1.8',
     default => 'libaugeas-ruby1.9.1'
   }
+  $rubygems_package_name  = $::lsbdistcodename? {
+    'trusty'  => 'rubygems1.9.1',
+    default   => 'rubygems',
+  }
 
   # INSTALL
   package {
@@ -108,7 +112,7 @@ class puppet (
     'augeas-tools':         ensure => latest;
     'libaugeas-ruby':       ensure => latest;
     $libaugeas_ruby_v:      ensure => latest;
-    'rubygems':             ensure => latest;
+    $rubygems_package_name: ensure => latest;
     'libaugeas0':           ensure => latest;
   }
 
