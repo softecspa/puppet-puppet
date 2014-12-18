@@ -22,7 +22,7 @@ class puppet::master::puppet_doc {
   } ->
 
   apache::vhost { 'puppet-doc.tools.softecspa.it':
-    listen  => '80',
+    port    => '80',
     docroot => '/var/www/puppet-doc.tools.softecspa.it/web'
   }
 
