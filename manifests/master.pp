@@ -77,13 +77,51 @@ class puppet::master(
     'puppetmaster':           ensure => $puppet::puppet_version;
   }
 
-  file { "puppetmaster-passenger-vhost":
-    path    => "/etc/apache2/sites-available/puppetmaster",
-    owner   => 'root',
-    group   => 'admin',
-    mode    => '0755',
-    content => template('puppet/passenger-vhost.erb')
+  include softec_apache
+  class{'apache::mod::passenger':
+    passenger_root                => '/var/lib/gems/1.9.1/gems/passenger-4.0.53',
+    passenger_default_ruby        => '/usr/bin/ruby1.9.1',
+    mod_path                      => '/var/lib/gems/1.9.1/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so',
+    passenger_high_performance    => 'on',
+    passenger_max_pool_size       => '15',
+    passenger_pool_idle_time      => '200',
+    passenger_max_requests        => '2500',
+    passenger_stat_throttle_rate  => '300'
   }
+
+  $request_headers = [
+    'unset X-Forwarded-For',
+    'set X-SSL-Subject %{SSL_CLIENT_S_DN}e',
+    'set X-Client-DN %{SSL_CLIENT_S_DN}e',
+    'set X-Client-Verify %{SSL_CLIENT_VERIFY}e'
+  ]
+  $location = [{
+    path  => '/',
+    provider  => 'location',
+    allow     => 'from all',
+    custom_fragment => 'SetHandler balancer-manager',
+  }]
+
+  apache::vhost{$master:
+    port    => '443',
+    ssl     => true,
+    docroot => '/usr/share/puppet/rack/puppetmasterd/public/',
+    ssl_cert  => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
+    ssl_key   => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
+    ssl_chain => '/var/lib/puppet/ssl/certs/ca.pem',
+    ssl_ca    => '/var/lib/puppet/ssl/certs/ca.pem',
+    ssl_crl_path   => '/var/lib/puppet/ssl/ca',
+    ssl_verify_client => 'optional',
+    ssl_verify_depth  => '1',
+    ssl_options       => '+StdEnvVars',
+    request_headers   => $request_headers,
+    rack_base_uris    => '/',
+    error_log_file    => 'puppetmaster_err.log',
+    access_log_file   => 'puppetmaster_acc.log',
+    access_log_format => 'combined_forward',
+    directories       => $location
+  }
+
 
   file { "puppetmaster-passenger-rack":
     path    => "/usr/share/puppet/rack/puppetmasterd/config.ru",
@@ -119,7 +157,7 @@ class puppet::master(
 
   if $ensure != 'absent'
   {
-    include apache2::service
+    include apache::service
   }
 
   # aggiungere

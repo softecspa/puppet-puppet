@@ -31,7 +31,8 @@ class puppet::master::private_modules (
     'drupal',
     'accounts',
     'generic_account',
-    'antandra_app'
+    'antandra_app',
+    'softec_apache'
   ]
 
   puppet::master::module { $private_modules:

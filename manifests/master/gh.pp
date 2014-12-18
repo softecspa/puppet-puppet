@@ -60,7 +60,6 @@ class puppet::master::gh (
     'basepackages',
     'softec_apt',
     'softecscripts',
-    'apache2',
     'common',
     'cron',
     'git',
@@ -143,7 +142,8 @@ class puppet::master::gh (
     'kvm',
     'apt',
     'concat',
-    'mysql'
+    'mysql',
+    'apache'
   ]
 
   puppet::master::module { $puppetlabs_modules:
