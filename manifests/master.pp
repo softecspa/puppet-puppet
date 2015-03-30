@@ -32,85 +32,92 @@
 # [*ca*]
 #   URL of the CA
 #
-class puppet::master(
-  $ensure       = 'present',
-  $storeconfig  = false,
-  $autosign     = false,
-  $puppetdb_server  = 'localhost',
-  $puppetdb_port  = 8081,
-  $reports = "puppetdb, datadog_reports",
-  $version = '',
+class puppet::master (
+  $ensure          = 'present',
+  $storeconfig     = false,
+  $autosign        = false,
+  $puppetdb_server = 'localhost',
+  $puppetdb_port   = 8081,
+  $reports         = 'puppetdb, datadog_reports',
+  $version         = '',
   $master,
-  $ca,
-  )
-{
+  $ca,) {
   validate_bool($autosign)
 
   if ($version != '') {
-    class {'puppet':
-      version => $version,
-    }
-  }
-  else {
+    class { 'puppet': version => $version, }
+  } else {
     include puppet
   }
 
-  if ! ($ensure in [ 'present', 'absent', 'latest' ]) {
+  if !($ensure in [
+    'present',
+    'absent',
+    'latest']) {
     fail('ensure parameter must be one of present, absent or latest')
   }
 
-  if ! $storeconfig == false {
-    if ! ($storeconfig in [ 'puppetdb' ]) {
+  if !$storeconfig == false {
+    if !($storeconfig in ['puppetdb']) {
       fail('storeconfig parameter must be false or puppetdb')
     }
   }
 
   # Packages
   apt::pin { 'puppetmaster':
-    packages  => [ 'puppetmaster-common', 'puppetmaster-passenger', 'puppetmaster'],
-    version   => $puppet::puppet_version,
-    priority  => '1001'
-  }->
+    packages => [
+      'puppetmaster-common',
+      'puppetmaster-passenger',
+      'puppetmaster'],
+    version  => $puppet::puppet_version,
+    priority => '1001'
+  } ->
   package {
-    'puppetmaster-common':    ensure => $puppet::puppet_version;
-    'puppetmaster-passenger': ensure => $puppet::puppet_version;
-    'puppetmaster':           ensure => $puppet::puppet_version;
+    'puppetmaster-common':
+      ensure => $puppet::puppet_version;
+
+    'puppetmaster-passenger':
+      ensure => $puppet::puppet_version;
+
+    'puppetmaster':
+      ensure => $puppet::puppet_version;
   }
 
   include softec_apache
-  class{'apache::mod::passenger':
-    passenger_root                => '/var/lib/gems/1.9.1/gems/passenger-4.0.53',
-    passenger_default_ruby        => '/usr/bin/ruby1.9.1',
-    mod_path                      => '/var/lib/gems/1.9.1/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so',
-    passenger_high_performance    => 'on',
-    passenger_max_pool_size       => '15',
-    passenger_pool_idle_time      => '200',
-    passenger_max_requests        => '2500',
-    passenger_stat_throttle_rate  => '300'
+
+  class { 'apache::mod::passenger':
+    passenger_root               => '/var/lib/gems/1.9.1/gems/passenger-4.0.53',
+    passenger_default_ruby       => '/usr/bin/ruby1.9.1',
+    mod_path                     => '/var/lib/gems/1.9.1/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so',
+    passenger_high_performance   => 'on',
+    passenger_max_pool_size      => '15',
+    passenger_pool_idle_time     => '200',
+    passenger_max_requests       => '2500',
+    passenger_stat_throttle_rate => '300'
   }
 
   $request_headers = [
     'unset X-Forwarded-For',
     'set X-SSL-Subject %{SSL_CLIENT_S_DN}e',
     'set X-Client-DN %{SSL_CLIENT_S_DN}e',
-    'set X-Client-Verify %{SSL_CLIENT_VERIFY}e'
-  ]
+    'set X-Client-Verify %{SSL_CLIENT_VERIFY}e']
   $location = [{
-    path  => '/',
-    provider  => 'location',
-    allow     => 'from all',
-    custom_fragment => 'SetHandler balancer-manager',
-  }]
+      path            => '/',
+      provider        => 'location',
+      allow           => 'from all',
+      custom_fragment => 'SetHandler balancer-manager',
+    }
+    ]
 
-  apache::vhost{$master:
-    port    => '443',
-    ssl     => true,
-    docroot => '/usr/share/puppet/rack/puppetmasterd/public/',
-    ssl_cert  => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
-    ssl_key   => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
-    ssl_chain => '/var/lib/puppet/ssl/certs/ca.pem',
-    ssl_ca    => '/var/lib/puppet/ssl/certs/ca.pem',
-    ssl_crl_path   => '/var/lib/puppet/ssl/ca',
+  apache::vhost { $master:
+    port              => '443',
+    ssl               => true,
+    docroot           => '/usr/share/puppet/rack/puppetmasterd/public/',
+    ssl_cert          => "/var/lib/puppet/ssl/certs/${::fqdn}.pem",
+    ssl_key           => "/var/lib/puppet/ssl/private_keys/${::fqdn}.pem",
+    ssl_chain         => '/var/lib/puppet/ssl/certs/ca.pem',
+    ssl_ca            => '/var/lib/puppet/ssl/certs/ca.pem',
+    ssl_crl_path      => '/var/lib/puppet/ssl/ca',
     ssl_verify_client => 'optional',
     ssl_verify_depth  => '1',
     ssl_options       => '+StdEnvVars',
@@ -122,9 +129,8 @@ class puppet::master(
     directories       => $location
   }
 
-
-  file { "puppetmaster-passenger-rack":
-    path    => "/usr/share/puppet/rack/puppetmasterd/config.ru",
+  file { 'puppetmaster-passenger-rack':
+    path    => '/usr/share/puppet/rack/puppetmasterd/config.ru',
     owner   => 'puppet',
     group   => 'puppet',
     mode    => '0755',
@@ -138,55 +144,53 @@ class puppet::master(
 
   # metti un template al file sopra e togli questa
   exec { 'puppetmaster-disable-startup':
-    command     => 'sed \'s/^START=yes/START=no/i\' -i~ /etc/default/puppetmaster',
-    unless      => 'grep -q \'^START=no\' /etc/default/puppetmaster',
-    require     => File['/etc/default/puppetmaster'],
+    command => 'sed \'s/^START=yes/START=no/i\' -i~ /etc/default/puppetmaster',
+    unless  => 'grep -q \'^START=no\' /etc/default/puppetmaster',
+    require => File['/etc/default/puppetmaster'],
   }
 
-  if ($ensure in ['present', 'latest'])
-  {
-    apt::pin {'puppetdb-terminus':
-      packages  => 'puppetdb-terminus',
-      version   => $puppet::puppetdb::puppetdb_version,
-      priority  => '1001'
-    }->
-    package {
-      'puppetdb-terminus':    ensure => $puppet::puppetdb::puppetdb_version;
-    }
+  if ($ensure in [
+    'present',
+    'latest']) {
+    apt::pin { 'puppetdb-terminus':
+      packages => 'puppetdb-terminus',
+      version  => $puppet::puppetdb::puppetdb_version,
+      priority => '1001'
+    } ->
+    package { 'puppetdb-terminus': ensure => $puppet::puppetdb::puppetdb_version; }
   }
 
-  if $ensure != 'absent'
-  {
+  if $ensure != 'absent' {
     include apache::service
   }
 
   # aggiungere
-  #/reports = store,datadog_reports
+  # /reports = store,datadog_reports
   augeas { 'puppet-master-config':
     context => '/files/etc/puppet/puppet.conf',
     changes => [
-      "set master/autosign $autosign",
-      "set master/certname $master",
-      "set master/report true",
-      "set master/pluginsync true",
-      "set master/reports $reports",
-      "set master/ssl_client_header SSL_CLIENT_S_DN",
-      "set master/ssl_client_verify_header SSL_CLIENT_VERIFY",
-    ]
+      "set master/autosign ${autosign}",
+      "set master/certname ${master}",
+      'set master/report true',
+      'set master/pluginsync true',
+      "set master/reports ${reports}",
+      'set master/ssl_client_header SSL_CLIENT_S_DN',
+      'set master/ssl_client_verify_header SSL_CLIENT_VERIFY',
+      ]
   }
 
   # Common modules shared between env
   $shared_modulepath = '/usr/share/puppet/modules'
 
   file { $shared_modulepath:
-    ensure    => directory,
-    group     => 'admin',
-    mode      => 02775,
+    ensure => directory,
+    group  => 'admin',
+    mode   => 02775,
   }
 
   # http://docs.puppetlabs.com/puppetdb/1/connect_puppet_master.html
   case $storeconfig {
-    'puppetdb': {
+    'puppetdb' : {
       file { '/etc/puppet/routes.yaml':
         ensure  => present,
         content => "---\nmaster:\n  facts:\n    terminus: puppetdb\n    cache: yaml\n"
@@ -195,9 +199,9 @@ class puppet::master(
       augeas { 'master-configuration-storeconfig':
         context => '/files/etc/puppet/puppet.conf',
         changes => [
-          "set master/storeconfigs true",
-          "set master/storeconfigs_backend puppetdb",
-        ]
+          'set master/storeconfigs true',
+          'set master/storeconfigs_backend puppetdb',
+          ]
       }
 
       # puppetdb.conf is not in the augeas lens, so I specify it directly
@@ -206,20 +210,18 @@ class puppet::master(
         incl    => '/etc/puppet/puppetdb.conf',
         context => '/files/etc/puppet/puppetdb.conf',
         changes => [
-          "set main/server $puppetdb_server",
-          "set main/port $puppetdb_port",
-        ]
+          "set main/server ${puppetdb_server}",
+          "set main/port ${puppetdb_port}",
+          ]
       }
     }
 
-    default: {
+    default    : {
       fail('PuppetDB is the only supported option for storeconfig')
     }
   }
 
-  #pulizia del bucket
-  tmpreaper::daily{ '/var/lib/puppet/bucket/':
-    time  => '30d',
-  }
+  # pulizia del bucket
+  tmpreaper::daily { '/var/lib/puppet/bucket/': time => '30d', }
 
 }
