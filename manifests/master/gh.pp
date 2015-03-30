@@ -147,7 +147,8 @@ class puppet::master::gh (
   ]
 
   puppet::master::module { $puppetlabs_modules:
-    prefix  => 'puppetlabs',
+    prefix => 'puppetlabs',
+    author => 'puppetlabs',
   }
 
   ## Third-party forked modules
