@@ -19,17 +19,6 @@ class puppet::master::code (
     '/etc/puppet/envs/production':   ensure  => directory;
   }
 
-  #subversion::checkout { 'checkout of puppet trunk (dev)':
-  #  ensure              => 'updated',
-  #  method              => $::svn_method,
-  #  host                => $::svn_host,
-  #  svnuser             => $::svn_user,
-  #  password            => $::svn_password,
-  #  repopath            => '/sistemi/puppet/trunk',
-  #  workingdir          => '/etc/puppet/envs/development',
-  #  require             => File['/etc/puppet/envs/development'],
-  #}
-
   augeas { 'master-envs-dev':
     context => '/files/etc/puppet/puppet.conf',
     changes => [
