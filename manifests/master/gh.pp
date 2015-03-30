@@ -9,11 +9,6 @@
 class puppet::master::gh (
   $autoupdate,
 ){
-  # all repos reside on softec account
-  Puppet::Master::Module {
-    author  => 'softecspa',
-    updated => $autoupdate,
-  }
 
   ## Softec modules
   $softec_modules = [
@@ -126,9 +121,23 @@ class puppet::master::gh (
     'hpsdr'
   ]
 
-  puppet::master::module{ $softec_modules: }
+  # moduli da noi creati o forkati softec
+  puppet::master::module{ $softec_modules:
+    author  => 'softecspa',
+    prefix  => 'puppet',
+    updated => $autoupdate,
+  }
 
-  ## PuppetLabs modules
+  # moduli di puppetlabs da noi modificati
+  # abbiamo aggiunto della roba runtime
+  puppet::master::module{ 'mysql':
+    author  => 'softecspa',
+    prefix  => 'puppetlabs',
+    updated => $autoupdate,
+  }
+
+
+  # moduli di PuppetLabs presi as-is
   $puppetlabs_modules = [
     'dhcp',
     'lvm',
@@ -142,7 +151,6 @@ class puppet::master::gh (
     'kvm',
     'apt',
     'concat',
-    'mysql',
     'apache'
   ]
 
