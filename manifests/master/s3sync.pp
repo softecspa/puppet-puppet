@@ -15,6 +15,7 @@ define puppet::master::s3sync (
     bucket_name => 'softec-puppetmaster',
     prefix      => "${datatype}/",
     reverse     => $reverse,
+    lazy        => true,
     require     => Class['s3cmd'],
   }
  
