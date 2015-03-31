@@ -232,6 +232,16 @@ class puppet (
       ],
   }
 
+  # Remove warning on template_dir setting in old puppet packages
+  ini_setting { 'puppet-templatedir-warning-remove':
+    ensure  => absent,
+    path    => '/etc/puppet/puppet.conf',
+    section => 'main',
+    setting => 'templatedir',
+  }
+
+
+
   case $environment {
     'production' : {
       # in produzione, una volta tra le 11 e le 13 e una volta
