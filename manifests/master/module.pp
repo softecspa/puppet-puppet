@@ -78,7 +78,7 @@ define puppet::master::module (
   $auth_pass   = undef,
   $method      = 'https',
   $identity    = undef,
-  $repo_url    = 
+  $repo_url    = undef,
 )
 {
   $target_path_ = $target_path ? {
