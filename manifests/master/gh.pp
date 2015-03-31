@@ -152,7 +152,8 @@ class puppet::master::gh (
     'kvm',
     'apt',
     'concat',
-    'apache'
+    'apache',
+    'inifile'
   ]
 
   puppet::master::module { $puppetlabs_modules:
