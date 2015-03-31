@@ -163,9 +163,9 @@ class puppet::master::gh (
   ## Third-party forked modules
   # TODO: eliminare questi moduli da gh/softecspa
   $third_party_modules = [
-    'DataDog/puppet-datadog-agent',
-    'thomasvandoren/puppet-etckeeper',
-    'smintz/puppet-mysql_mmm',
+    'DataDog/datadog-agent',
+    'thomasvandoren/etckeeper',
+    'smintz/mysql_mmm',
     'fsalum/newrelic',
     'fsalum/redis',
     'tobru/smokeping',
