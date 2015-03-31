@@ -164,12 +164,6 @@ class puppet (
     owner   => 'root'
   }
 
-  file { '/var/log/puppet':
-    ensure => directory,
-    group  => 'adm',
-    mode   => '2770',
-  }
-
   file { '/etc/default/puppet':
     ensure  => present,
     require => Package['puppet'],
