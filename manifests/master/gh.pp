@@ -178,13 +178,15 @@ class puppet::master::gh (
   }
 
   ## Concat: new style module
+  # TODO: droppare pupmod-concat da gh/softecspa
   puppet::master::module { 'onyxpoint/concat':
     target   => 'concat_new',
     repo_url => 'https://github.com/onyxpoint/pupmod-concat.git',
   }
 
   ## Puppi
-  puppet::master::module { 'puppi':
+  # TODO: droppare puppi da gh/softecspa
+  puppet::master::module { 'example42/puppi':
     prefix => '',
   }
 
