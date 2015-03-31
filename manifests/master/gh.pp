@@ -178,9 +178,9 @@ class puppet::master::gh (
   }
 
   ## Concat: new style module
-  puppet::master::module { 'concat':
-    target => 'concat_new',
-    prefix => 'pupmod'
+  puppet::master::module { 'onyxpoint/concat':
+    target   => 'concat_new',
+    repo_url => 'https://github.com/onyxpoint/pupmod-concat.git',
   }
 
   ## Puppi
