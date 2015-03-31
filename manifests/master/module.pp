@@ -67,17 +67,18 @@
 #   }
 #
 define puppet::master::module (
-  $prefix = 'puppet',
-  $author = undef,
-  $modname = undef,
-  $target = undef,
+  $prefix      = 'puppet',
+  $author      = undef,
+  $modname     = undef,
+  $target      = undef,
   $target_path = undef,
-  $updated = false,
-  $server = 'github.com',
-  $auth_user = undef,
-  $auth_pass = undef,
-  $method     = 'https',
-  $identity = undef
+  $updated     = false,
+  $server      = 'github.com',
+  $auth_user   = undef,
+  $auth_pass   = undef,
+  $method      = 'https',
+  $identity    = undef,
+  $repo_url    = 
 )
 {
   $target_path_ = $target_path ? {
@@ -125,11 +126,14 @@ define puppet::master::module (
     false => undef
   }
 
-  $source_url = $method?{
-    'https' => "https://${server}/${real_user}/${real_repo}.git",
-    'ssh'   => "git@${server}:${real_user}/${real_repo}.git"
+  if $repo_url {
+    $source_url = $repo_url
+  } else {
+    $source_url = $method?{
+      'https' => "https://${server}/${real_user}/${real_repo}.git",
+      'ssh'   => "git@${server}:${real_user}/${real_repo}.git"
+    }
   }
-
   vcsrepo { "${target_path_}/${target_}":
     ensure              => $ensure_vcsrepo,
     provider            => git,
