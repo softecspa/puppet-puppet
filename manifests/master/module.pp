@@ -88,7 +88,7 @@ define puppet::master::module (
 
   if $author == undef {
     validate_re($name, '[a-zA-Z][a-zA-Z0-9_]*/[a-zA-Z][A-Za-z0-9_]+',
-                'name of the resource must be in the format [USER/]REPOSITORY')
+                "Invalid name ${name}, name of the resource must be in the format [USER/]REPOSITORY")
     $name_array = split($name, '/')
     validate_array($name_array)
 
