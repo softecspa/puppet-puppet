@@ -164,7 +164,6 @@ class puppet::master::gh (
   ## Third-party forked modules
   # TODO: eliminare questi moduli da gh/softecspa
   $third_party_modules = [
-    'DataDog/datadog-agent',
     'thomasvandoren/etckeeper',
     'smintz/mysql_mmm',
     'fsalum/newrelic',
@@ -173,6 +172,10 @@ class puppet::master::gh (
   ]
 
   puppet::master::module{ $third_party_modules: }
+  puppet::master::module{ 'datadog': 
+    author => 'DataDog',
+    repo_url => 'https://github.com/DataDog/puppet-datadog-agent.git',
+  }
 
   ## Concat: new style module
   puppet::master::module { 'pupmod-concat':
