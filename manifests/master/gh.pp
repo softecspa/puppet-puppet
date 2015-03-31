@@ -178,9 +178,9 @@ class puppet::master::gh (
   }
 
   ## Concat: new style module
-  puppet::master::module { 'pupmod-concat':
+  puppet::master::module { 'concat':
     target => 'concat_new',
-    prefix => ''
+    prefix => 'pupmod'
   }
 
   ## Puppi
