@@ -118,7 +118,8 @@ class puppet::master::gh (
     'nagios',
     'softec_newrelic',
     'wget',
-    'hpsdr'
+    'hpsdr',
+    'modprobe',
   ]
 
   # moduli da noi creati o forkati softec
@@ -160,14 +161,14 @@ class puppet::master::gh (
   }
 
   ## Third-party forked modules
+  # TODO: eliminare questi moduli da gh/softecspa
   $third_party_modules = [
-    'datadog',
-    'etckeeper',
-    'mysql_mmm',
-    'newrelic',
-    'redis',
-    'smokeping',
-    'modprobe',
+    'DataDog/puppet-datadog-agent',
+    'thomasvandoren/puppet-etckeeper',
+    'smintz/puppet-mysql_mmm',
+    'fsalum/newrelic',
+    'fsalum/redis',
+    'tobru/smokeping',
   ]
 
   puppet::master::module{ $third_party_modules: }
