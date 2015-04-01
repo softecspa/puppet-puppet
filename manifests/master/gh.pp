@@ -168,7 +168,7 @@ class puppet::master::gh (
     'fsalum/newrelic',
     'fsalum/redis',
     'tobru/smokeping',
-    'liquidstate/wget',
+    'maestrodev/wget',
   ]
 
   puppet::master::module{ $third_party_modules:
