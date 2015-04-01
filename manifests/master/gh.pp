@@ -117,7 +117,6 @@ class puppet::master::gh (
     'softec_xen',
     'nagios',
     'softec_newrelic',
-    'wget',
     'hpsdr',
     'modprobe',
   ]
@@ -169,10 +168,14 @@ class puppet::master::gh (
     'fsalum/newrelic',
     'fsalum/redis',
     'tobru/smokeping',
+    'liquidstate/wget',
   ]
 
-  puppet::master::module{ $third_party_modules: }
-  puppet::master::module{ 'datadog': 
+  puppet::master::module{ $third_party_modules:
+    prefix => 'puppet',
+  }
+  
+  puppet::master::module{ 'datadog':
     author => 'DataDog',
     repo_url => 'https://github.com/DataDog/puppet-datadog-agent.git',
   }
