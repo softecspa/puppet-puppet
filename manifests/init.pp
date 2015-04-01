@@ -46,19 +46,19 @@ class puppet (
   apt::source { 'puppetlabs':
     location => 'http://apt.puppetlabs.com',
     repos    => 'main',
-    key      => '4BD6EC30',
+    key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
   }
 
   apt::source { 'puppetlabs-deps':
     location => 'http://apt.puppetlabs.com',
     repos    => 'dependencies',
-    key      => '4BD6EC30',
+    key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
   }
 
   # for latest augeas packages. Not for trusty
   if $::lsbdistcodename != 'trusty' {
     softec_apt::ppa { 'skettler/puppet':
-      key    => 'C18789EA',
+      key    => 'F02E13A8C7F16065114C757F19803648C18789EA',
       mirror => true
     }
   }
@@ -69,18 +69,13 @@ class puppet (
   }
 
   if $::lsbdistcodename == 'precise' {
-    # aggiungo questo ppa per precise che contiene augeas alla versione 1.0.0
-    # apt::key { 'AE498453': }
-    # apt::sources_list { 'augeas':
-    #  content => "deb http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu
-    #  ${::lsbdistcodename} main\ndeb-src http://ppa.launchpad.net/raphink/augeas-1.0.0/ubuntu ${::lsbdistcodename} main",
-    #}
+    softec_apt::ppa { 'raphink/augeas-1.0.0':
+      key => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
+    }
 
-    softec_apt::ppa { 'raphink/augeas-1.0.0': key => 'AE498453',
-    # mirror  => true
-     }
-
-    softec_apt::ppa { 'brightbox/ruby-ng': key => 'C3173AA6' } ->
+    softec_apt::ppa { 'brightbox/ruby-ng':
+      key => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6'
+    }->
     package {
       'ruby1.9.1':
         ensure => present;
