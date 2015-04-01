@@ -263,7 +263,6 @@ class puppet (
           $hour3],
         require => [
           File[$puppet_run],
-          File['/var/log/puppet'],
           File['/usr/local/bin/solo']],
       }
     }
@@ -281,7 +280,6 @@ class puppet (
         hour    => '8-14',
         require => [
           File[$puppet_run],
-          File['/var/log/puppet'],
           File['/usr/local/bin/solo']],
       }
     }
