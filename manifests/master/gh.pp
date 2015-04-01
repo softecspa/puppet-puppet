@@ -190,4 +190,8 @@ class puppet::master::gh (
     prefix => '',
   }
 
+  puppet::master::module { 'backup':
+    author => 'softecspa',
+    prefix => 'evenup',
+  }
 }
