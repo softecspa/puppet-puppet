@@ -190,7 +190,7 @@ class puppet::master::gh (
     prefix => '',
   }
 
-  puppet::master::module { 'backup':
+  puppet::master::module { 'backups':
     author => 'softecspa',
     prefix => 'evenup',
   }
