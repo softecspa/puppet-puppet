@@ -25,9 +25,6 @@ class puppet (
       Apt::Source['puppetlabs']],
   }
 
-  # clean old unused repository
-  apt::source { 'puppet': ensure => absent, }
-
   case $::lsbdistcodename {
     'hardy' : {
       $puppet_env_version = $environment ? {
@@ -38,8 +35,8 @@ class puppet (
     }
 
     default : {
-      $puppet_env_version = '3.7.3-1puppetlabs1'
-      $facter_version = '2.3.0-1puppetlabs1'
+      $puppet_env_version = '3.7.5-1puppetlabs1'
+      $facter_version = '2.4.3-1puppetlabs1'
     }
   }
 
