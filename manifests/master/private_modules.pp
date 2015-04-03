@@ -36,8 +36,9 @@ class puppet::master::private_modules (
   ]
 
   puppet::master::module { $private_modules:
-    updated     => $autoupdate,
-    author      => $private_repos_author,
-    server      => $private_repos,
+    updated => $autoupdate,
+    author  => $private_repos_author,
+    server  => $private_repos,
+    method  => 'ssh',
   }
 }
