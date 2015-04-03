@@ -126,7 +126,8 @@ class puppet::master (
     error_log_file    => 'puppetmaster_err.log',
     access_log_file   => 'puppetmaster_acc.log',
     access_log_format => 'combined_forward',
-    directories       => $location
+    directories       => $location,
+    setenv            => 'LANG it_IT.UTF-8',
   }
 
   file { 'puppetmaster-passenger-rack':
