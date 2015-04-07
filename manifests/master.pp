@@ -102,7 +102,7 @@ class puppet::master (
     'set X-Client-DN %{SSL_CLIENT_S_DN}e',
     'set X-Client-Verify %{SSL_CLIENT_VERIFY}e']
   $location = [{
-      path            => '/',
+      path            => '/balancer',
       provider        => 'location',
       allow           => 'from all',
       custom_fragment => 'SetHandler balancer-manager',
