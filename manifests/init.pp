@@ -40,16 +40,28 @@ class puppet (
     }
   }
 
-  apt::source { 'puppetlabs':
-    location => 'http://apt.puppetlabs.com',
-    repos    => 'main',
-    key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
-  }
+  case $::lsbdistcodename {
+    'lucid' : {
+      apt::source { 'puppetlabs':
+        ensure => absent,
+      }
+      apt::source { 'puppetlabs-deps':
+        ensure => absent,
+      }
+    }
+    default : {
+      apt::source { 'puppetlabs':
+        location => 'http://apt.puppetlabs.com',
+        repos    => 'main',
+        key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
+      }
 
-  apt::source { 'puppetlabs-deps':
-    location => 'http://apt.puppetlabs.com',
-    repos    => 'dependencies',
-    key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
+      apt::source { 'puppetlabs-deps':
+        location => 'http://apt.puppetlabs.com',
+        repos    => 'dependencies',
+        key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
+      }
+    }
   }
 
   # for latest augeas packages. Not for trusty
@@ -147,8 +159,9 @@ class puppet (
   # CONFIG
   # TODO: chiarire a cosa serve questo qui
   # suppongo serva per il modulo SSH, ma da qui non si capisce
-  # esplicitiamo la dipendenza con una define puppet::augeaslens{ 'ssh': } da mettere
-  # nel modulo openssh. E magari con l'occasione tiriamo fuori augeas dal modulo puppet
+  # esplicitiamo la dipendenza con una define puppet::augeaslens{ 'ssh': } da 
+  # mettere nel modulo openssh. E magari con l'occasione tiriamo fuori augeas 
+  # dal modulo puppet
   file { "${augeas_lenses_dir}/ssh.aug":
     ensure  => present,
     require => Package['augeas-lenses'],
