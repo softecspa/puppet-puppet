@@ -171,10 +171,15 @@ class puppet::master::gh (
     'maestrodev/wget',
   ]
 
+  puppet::master::module { 'docker':
+    prefix => 'garethr',
+    author => 'garethr',
+  }
+
   puppet::master::module{ $third_party_modules:
     prefix => 'puppet',
   }
-  
+
   puppet::master::module{ 'datadog':
     author => 'DataDog',
     repo_url => 'https://github.com/DataDog/puppet-datadog-agent.git',
