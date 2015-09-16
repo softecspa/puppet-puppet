@@ -160,7 +160,7 @@ class puppet::master::gh (
     author => 'puppetlabs',
   }
 
-  ## Third-party forked modules
+  ## Third-party modules
   # TODO: eliminare questi moduli da gh/softecspa
   $third_party_modules = [
     'thomasvandoren/etckeeper',
