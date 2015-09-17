@@ -171,13 +171,18 @@ class puppet::master::gh (
     'maestrodev/wget',
   ]
 
+  puppet::master::module{ $third_party_modules:
+    prefix => 'puppet',
+  }
+
   puppet::master::module { 'docker':
     prefix => 'garethr',
     author => 'garethr',
   }
 
-  puppet::master::module{ $third_party_modules:
-    prefix => 'puppet',
+  puppet::master::module { 'types':
+    prefix => 'puppet-module',
+    author => 'ghoneycutt',
   }
 
   puppet::master::module{ 'datadog':
