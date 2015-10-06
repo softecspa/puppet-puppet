@@ -22,7 +22,6 @@ class puppet (
   Package {
     require => [
       Class['apt'],
-      Apt::Source['puppetlabs']],
   }
 
   case $::lsbdistcodename {
