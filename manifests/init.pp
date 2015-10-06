@@ -9,8 +9,8 @@ class puppet (
 
   # con -i 5 ci riprova fino a 64 minuti dopo la chiamata, con 60 secondi
   # di -i ci riprova fino a 4h e mezzo dopo
-  $puppet_run_cmd_dev = "${solo} ${puppet_run} -i 5 -q -m 2> /dev/null"
-  $puppet_run_cmd_prod = "${solo} ${puppet_run} -i 60 -q -m 2> /dev/null"
+  $puppet_run_cmd_dev = "${solo} ${puppet_run} -a 2 -q -m 2> /dev/null"
+  $puppet_run_cmd_prod = "${solo} ${puppet_run} -a 2 -q -m 2> /dev/null"
   $augeas_lenses_dir = '/usr/share/augeas/lenses/dist'
 
   # Module defaults
@@ -32,6 +32,11 @@ class puppet (
         default      => '2.7.20~hardy~ppa1',
       }
       $facter_version = '1.6.18~lucid~ppa1'
+    }
+
+    'lucid': {
+      $puppet_env_version = 'latest'
+      $facter_version = 'latest'
     }
 
     default : {
