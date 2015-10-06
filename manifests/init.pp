@@ -20,8 +20,7 @@ class puppet (
   }
 
   Package {
-    require => [
-      Class['apt'],
+    require => [ Class['apt'] ],
   }
 
   case $::lsbdistcodename {
