@@ -48,13 +48,14 @@ class puppet (
   case $::lsbdistcodename {
     'lucid' : {
         softec_apt::mirror::repo { 'puppetlabs':
-            url  => 'http://apt.puppetlabs.com',
-            path => 'main',
+            enable => true,
+            url    => 'http://apt.puppetlabs.com',
         }
 
         softec_apt::mirror::repo { 'puppetlabs-deps':
-            url  => 'http://apt.puppetlabs.com',
-            path => 'dependencies',
+            enable => true,
+            url    => 'http://apt.puppetlabs.com',
+            repos  => 'dependencies'
         }
     }
     default : {
