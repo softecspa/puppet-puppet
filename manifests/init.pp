@@ -42,12 +42,15 @@ class puppet (
 
   case $::lsbdistcodename {
     'lucid' : {
-      apt::source { 'puppetlabs':
-        ensure => absent,
-      }
-      apt::source { 'puppetlabs-deps':
-        ensure => absent,
-      }
+        softec_apt::mirror::repo { 'puppetlabs':
+            url  => 'http://apt.puppetlabs.com',
+            path => 'main',
+        }
+
+        softec_apt::mirror::repo { 'puppetlabs-deps':
+            url  => 'http://apt.puppetlabs.com',
+            path => 'dependencies',
+        }
     }
     default : {
       apt::source { 'puppetlabs':
@@ -181,7 +184,7 @@ class puppet (
     require => File['/etc/default/puppet'],
   }
 
-  # Script that runs puppet until it exists whitout errors
+  # Script that runs puppet until it exists without errors
   file { $puppet_run:
     ensure  => present,
     owner   => 'root',
