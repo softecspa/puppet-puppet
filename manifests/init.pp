@@ -54,6 +54,8 @@ class puppet (
         'libaugeas0'] :
           ensure => present;
       }
+      # we run puppet from cron
+      package { 'puppet': ensure => absent }
     }
 
     'precise': {
@@ -109,7 +111,7 @@ class puppet (
       }
       package {
         'puppet':
-          ensure => $puppet_version;
+          ensure => 'absent';  # runs from cron
         'puppet-common':
           ensure => $puppet_version;
         'facter':
@@ -143,7 +145,7 @@ class puppet (
       }
       package {
         'puppet':
-          ensure => $puppet_version;
+          ensure => absent;
         'puppet-common':
           ensure => $puppet_version;
         'facter':
@@ -167,18 +169,6 @@ class puppet (
     require => Package['augeas-lenses'],
     source  => 'puppet:///modules/puppet/ssh.aug',
     owner   => 'root'
-  }
-
-  file { '/etc/default/puppet':
-    ensure  => present,
-    require => Package['puppet'],
-  }
-
-  # #569: disable running as a service
-  exec { 'puppet-disable-startup':
-    command => '/bin/sed \'s/^START=yes/START=no/i\' -i~ /etc/default/puppet',
-    unless  => '/bin/grep -q \'^START=no\' /etc/default/puppet',
-    require => File['/etc/default/puppet'],
   }
 
   # Script that runs puppet until it exists without errors
