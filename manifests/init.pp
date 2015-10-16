@@ -33,139 +33,127 @@ class puppet (
     }
 
     'lucid': {
-      $puppet_env_version = 'latest'
+      $puppet_version = $version ? {
+        ''      => 'latest',
+        default => $version
+      }
+      softec_apt::mirror::repo { 'puppetlabs':
+        title  => 'puppetlabs',
+        enable => true,
+        url    => 'apt.puppetlabs.com',
+        repos  => 'main',
+      }
+      package { [
+        'puppet-common',
+        'facter',
+        'augeas-lenses',
+        'augeas-tools',
+        'libaugeas-ruby',
+        'libaugeas_ruby1.8',
+        'rubygems1.8',
+        'libaugeas0'] :
+          ensure => present;
+      }
+    }
+
+    'precise': {
+      $puppet_version = $version ? {
+        ''      => '3.7.5-1puppetlabs1',
+        default => $version
+      }
       $facter_version = 'latest'
-    }
-
-    default : {
-      $puppet_env_version = '3.7.5-1puppetlabs1'
-      $facter_version = '2.4.3-1puppetlabs1'
-    }
-  }
-
-  case $::lsbdistcodename {
-    'lucid' : {
-        softec_apt::mirror::repo { 'puppetlabs':
-            title  => 'puppetlabs',
-            enable => true,
-            url    => 'apt.puppetlabs.com',
-            repos  => 'main',
+      softec_apt::mirror::repo { 'puppetlabs':
+        title  => 'puppetlabs',
+        enable => true,
+        url    => 'apt.puppetlabs.com',
+        repos  => 'main',
+      }
+      softec_apt::mirror::repo { 'puppetlabs-deps':
+        title  => 'puppetlabs-deps',
+        enable => true,
+        url    => 'apt.puppetlabs.com',
+        repos  => 'dependencies',
+      }
+      softec_apt::ppa { 'skettler/puppet':
+        key    => 'F02E13A8C7F16065114C757F19803648C18789EA',
+        mirror => true,
+      }
+      softec_apt::ppa { 'raphink/augeas-1.0.0':
+        key    => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
+        mirror => true,
+      }
+      softec_apt::ppa { 'brightbox/ruby-ng':
+        key    => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6',
+        mirror => true,
+      } ->
+      package {
+        'ruby1.9.1':
+          ensure => present;
+        'ruby1.9.1-dev':
+          ensure => present;
+          'ruby-switch':
+            ensure => present;
+        } ->
+        exec { 'switch ruby1.9.1':
+          command => 'ruby-switch --set ruby1.9.1',
+          unless  => 'ruby-switch --check | grep Currently | awk \'{print $3}\' | grep \'ruby1.9.1\''
         }
-
-        #softec_apt::mirror::repo { 'puppetlabs-deps':
-        #    title  => 'puppetlabs-deps',
-        #    enable => true,
-        #    url    => 'apt.puppetlabs.com',
-        #    repos  => 'dependencies',
-        #}
+      package { [
+        'augeas-lenses',
+        'augeas-tools',
+        'libaugeas-ruby',
+        'libaugeas-ruby1.9.1',
+        'rubygems',
+        'libaugeas0'] :
+          ensure => latest;
+      }
+      package {
+        'puppet':
+          ensure => $puppet_version;
+        'puppet-common':
+          ensure => $puppet_version;
+        'facter':
+          ensure => $facter_version;
+      }
     }
-    default : {
+
+    'trusty': {
+      $puppet_version = $version ? {
+        ''      => '3.7.5-1puppetlabs1',
+        default => $version
+      }
+      $facter_version = 'latest'
       apt::source { 'puppetlabs':
         location => 'http://apt.puppetlabs.com',
         repos    => 'main',
         key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
       }
-
       apt::source { 'puppetlabs-deps':
         location => 'http://apt.puppetlabs.com',
         repos    => 'dependencies',
         key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
       }
-    }
-  }
-
-  # for latest augeas packages. Not for trusty
-  if $::lsbdistcodename != 'trusty' {
-    softec_apt::ppa { 'skettler/puppet':
-      key    => 'F02E13A8C7F16065114C757F19803648C18789EA',
-      mirror => true,
-    }
-  }
-
-  $puppet_version = $version ? {
-    ''      => $puppet_env_version,
-    default => $version
-  }
-
-  if $::lsbdistcodename == 'precise' {
-    softec_apt::ppa { 'raphink/augeas-1.0.0':
-      key    => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
-      mirror => true,
+      package { [
+        'augeas-lenses',
+        'augeas-tools',
+        'libaugeas-ruby',
+        'rubygems-integration',
+        ]:
+          ensure => latest;
+      }
+      package {
+        'puppet':
+          ensure => $puppet_version;
+        'puppet-common':
+          ensure => $puppet_version;
+        'facter':
+          ensure => $facter_version;
+      }
     }
 
-    softec_apt::ppa { 'brightbox/ruby-ng':
-      key    => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6'
-      mirror => true,
-    }->
-    package {
-      'ruby1.9.1':
-        ensure => present;
-
-      'ruby1.9.1-dev':
-        ensure => present;
-
-      'ruby-switch':
-        ensure => present;
-    } ->
-    exec { 'switch ruby1.9.1':
-      command => 'ruby-switch --set ruby1.9.1',
-      unless  => 'ruby-switch --check | grep Currently | awk \'{print $3}\' | grep \'ruby1.9.1\''
+    default: {
+        warning('FIXME: this module does not work in this distro release')
     }
-
-  }
-
-  $libaugeas_ruby_v = $::lsbdistcodename ? {
-    'lucid' => 'libaugeas-ruby1.8',
-    default => 'libaugeas-ruby1.9.1'
-  }
-  $rubygems_package_name = $::lsbdistcodename ? {
-    'trusty' => 'rubygems1.9.1',
-    default  => 'rubygems',
-  }
-
-  # INSTALL
-  package {
-    'augeas-lenses':
-      ensure => latest;
-
-    'augeas-tools':
-      ensure => latest;
-
-    'libaugeas-ruby':
-      ensure => latest;
-
-    $libaugeas_ruby_v:
-      ensure => latest;
-
-    $rubygems_package_name:
-      ensure => latest;
-
-    'libaugeas0':
-      ensure => latest;
-  }
-
-  apt::pin {
-    'puppet':
-      packages => [
-        'puppet',
-        'puppet-common'],
-      version  => $puppet_version,
-      priority => '1001';
-
-    'facter':
-      packages => 'facter',
-      version  => $facter_version,
-      priority => '1001'
-  } ->
-  package {
-    'puppet':
-      ensure => $puppet_version;
-
-    'puppet-common':
-      ensure => $puppet_version;
-
-    'facter':
-      ensure => $facter_version;
   }
 
   # CONFIG
@@ -251,20 +239,16 @@ class puppet (
     setting => 'templatedir',
   }
 
-
-
   case $environment {
     'production' : {
       # in produzione, una volta tra le 11 e le 13 e una volta
       # tra le 14 e le 16, dal lunedi al giovedi compresi
       # Fx - sposto l'intervallo del mattino a 9-13
       # Fx - 13/02/2013 - tolgo l'esecuzione del puppet al pomeriggio
-
       $hour1 = fqdn_rand(2, 'puppet run') + 09
       $hour2 = fqdn_rand(2, 'puppet run') + 11
       $hour3 = fqdn_rand(2, 'puppet run') + 13
       $minute = fqdn_rand(59, 'puppet run')
-
       cron { 'puppet-cron-onetime':
         command => $puppet_run_cmd_prod,
         user    => 'root',
