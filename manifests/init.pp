@@ -52,12 +52,12 @@ class puppet (
             repos  => 'main',
         }
 
-        softec_apt::mirror::repo { 'puppetlabs-deps':
-            title  => 'puppetlabs-deps',
-            enable => true,
-            url    => 'apt.puppetlabs.com',
-            repos  => 'dependencies',
-        }
+        #softec_apt::mirror::repo { 'puppetlabs-deps':
+        #    title  => 'puppetlabs-deps',
+        #    enable => true,
+        #    url    => 'apt.puppetlabs.com',
+        #    repos  => 'dependencies',
+        #}
     }
     default : {
       apt::source { 'puppetlabs':
