@@ -78,7 +78,7 @@ class puppet (
   if $::lsbdistcodename != 'trusty' {
     softec_apt::ppa { 'skettler/puppet':
       key    => 'F02E13A8C7F16065114C757F19803648C18789EA',
-      mirror => true
+      mirror => true,
     }
   }
 
@@ -89,11 +89,13 @@ class puppet (
 
   if $::lsbdistcodename == 'precise' {
     softec_apt::ppa { 'raphink/augeas-1.0.0':
-      key => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
+      key    => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
+      mirror => true,
     }
 
     softec_apt::ppa { 'brightbox/ruby-ng':
-      key => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6'
+      key    => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6'
+      mirror => true,
     }->
     package {
       'ruby1.9.1':
