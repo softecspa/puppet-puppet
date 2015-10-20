@@ -43,7 +43,7 @@ class puppet::puppetdb(
     fail('db_type parameter must be one of hsqldb or postgresql')
   }
 
-  $puppetdb_version = '2.2.2-1puppetlabs1'
+  $puppetdb_version = '2.3.8-1puppetlabs1'
 
   apt::pin {'puppetdb':
     packages  => 'puppetdb',
