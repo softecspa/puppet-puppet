@@ -49,7 +49,7 @@ class puppet (
         'augeas-lenses',
         'augeas-tools',
         'libaugeas-ruby',
-        'libaugeas_ruby1.8',
+        'libaugeas-ruby1.8',
         'rubygems1.8',
         'libaugeas0'] :
           ensure => present;
