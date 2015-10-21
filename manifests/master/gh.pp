@@ -180,8 +180,8 @@ class puppet::master::gh (
     author => 'garethr',
   }
 
-  puppet::master::module { [ 'common', 'types' ]:
-    prefix => 'puppet-module',
+  puppet::master::module { [ 'puppet-module-types', 'puppet-module-common' ]:
+    prefix => '',
     author => 'ghoneycutt',
   }
 
