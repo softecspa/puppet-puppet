@@ -142,8 +142,6 @@ class puppet (
           ensure => latest;
       }
       package {
-        'puppet':
-          ensure => absent;
         'puppet-common':
           ensure => $puppet_version;
         'facter':
