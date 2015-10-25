@@ -40,7 +40,7 @@ function correct_run()
 }
 
 # Setting default values for script variables
-declare -i MAX_ATTEMPTS=10
+declare -i MAX_ATTEMPTS=3
 declare -i WAIT_INTERVAL=30
 declare -i MULTIPLIER_FACTOR=2
 declare -i REBOOT_NEEDED=0
