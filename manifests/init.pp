@@ -110,8 +110,6 @@ class puppet (
           ensure => latest;
       }
       package {
-        'puppet':
-          ensure => 'absent';  # runs from cron
         'puppet-common':
           ensure => $puppet_version;
         'facter':
