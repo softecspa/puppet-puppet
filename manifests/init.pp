@@ -213,7 +213,7 @@ class puppet (
     require => [
       File['/etc/puppet/etckeeper-commit-pre'],
       File['/etc/puppet/etckeeper-commit-post'],
-      Package['puppet'],
+      Package['puppet-common'],
       ],
   }
 
