@@ -60,7 +60,7 @@ class puppet (
 
     'precise': {
       $puppet_version = $version ? {
-        ''      => '3.7.5-1puppetlabs1',
+        ''      => 'latest',
         default => $version
       }
       $facter_version = 'latest'
@@ -119,7 +119,7 @@ class puppet (
 
     'trusty': {
       $puppet_version = $version ? {
-        ''      => '3.7.5-1puppetlabs1',
+        ''      => 'latest',
         default => $version
       }
       $facter_version = 'latest'
