@@ -188,12 +188,12 @@ class puppet (
     '/etc/puppet/etckeeper-commit-pre':
       source  => 'puppet:///modules/puppet/etc/etckeeper-commit-pre',
       mode    => '0775',
-      require => Package['puppet'];
+      require => Package['puppet-common'];
 
     '/etc/puppet/etckeeper-commit-post':
       source  => 'puppet:///modules/puppet/etc/etckeeper-commit-post',
       mode    => '0775',
-      require => Package['puppet'];
+      require => Package['puppet-common'];
   }
 
   # da aggiungere??
