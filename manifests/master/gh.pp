@@ -169,6 +169,7 @@ class puppet::master::gh (
     'fsalum/redis',
     'tobru/smokeping',
     'maestrodev/wget',
+    'mthibaut/users',
   ]
 
   puppet::master::module{ $third_party_modules:
