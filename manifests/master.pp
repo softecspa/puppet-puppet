@@ -165,6 +165,8 @@ class puppet::master (
       'set master/ssl_client_header SSL_CLIENT_S_DN',
       'set master/ssl_client_verify_header SSL_CLIENT_VERIFY',
       'set master/always_cache_features true',
+      'set master/environmentpath $confdir/envs',
+
       ]
   }
 
