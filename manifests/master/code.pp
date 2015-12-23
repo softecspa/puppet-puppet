@@ -81,7 +81,7 @@ class puppet::master::code (
     require  => File['/root/.netrc']
   }
 
-  vcsrepo { '/etc/puppet/hiera':
+  vcsrepo { '/etc/puppet/hieradata':
     ensure   => $vcsrepo_ensure,
     provider => git,
     source   => "https://${private_repos}/${private_repos_author}/puppet-hiera.git",

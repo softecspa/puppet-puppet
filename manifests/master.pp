@@ -179,6 +179,23 @@ class puppet::master (
     mode   => 02775,
   }
 
+  file { '/etc/puppet/hieradata':
+    ensure => directory,
+    group  => 'admin',
+    mode   => 02775,
+  }
+
+  file { '/etc/puppet/hiera.yaml':
+    content => file('puppet/etc/hiera.yaml'),
+    group  => 'admin',
+    mode   => 02775,
+  }
+
+  file { '/etc/hiera.yaml':
+    ensure => symlink,
+    target => '/etc/puppet/hiera.yaml',
+  }
+
   # http://docs.puppetlabs.com/puppetdb/1/connect_puppet_master.html
   case $storeconfig {
     'puppetdb' : {
