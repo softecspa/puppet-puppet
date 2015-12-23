@@ -13,20 +13,20 @@ class puppet::master::code (
   $private_repos_pass,
   $autoupdate = true,) {
   file {
-    '/etc/puppet/envs/development':
+    '/etc/puppet/environments/development':
       ensure => directory;
 
-    '/etc/puppet/envs/production':
+    '/etc/puppet/environments/production':
       ensure => directory;
   }
 
-  augeas { 'master-envs-dev':
-    context => '/files/etc/puppet/puppet.conf',
-    changes => [
-      'set development/manifest /etc/puppet/envs/development/manifests/site.pp',
-      'set development/modulepath /etc/puppet/envs/development/modules:/usr/share/puppet/modules',
-      ]
-  }
+  #augeas { 'master-environments-dev':
+  #  context => '/files/etc/puppet/puppet.conf',
+  #  changes => [
+  #    'set development/manifest /etc/puppet/environments/development/manifests/site.pp',
+  #    'set development/modulepath /etc/puppet/environments/development/modules:/usr/share/puppet/modules',
+  #    ]
+  #}
 
   if $autoupdate {
     $vcsrepo_ensure = 'latest'
@@ -45,23 +45,23 @@ class puppet::master::code (
     content => "machine ${private_repos}\nlogin ${private_repos_user}\npassword ${private_repos_pass}"
   }
 
-  vcsrepo { '/etc/puppet/envs/development/manifests':
+  vcsrepo { '/etc/puppet/environments/development/manifests':
     ensure   => $vcsrepo_ensure,
     provider => git,
     source   => "https://${private_repos}/${private_repos_author}/puppet-manifests.git",
     revision => 'development',
     require  => [
-      File['/etc/puppet/envs/development'],
+      File['/etc/puppet/environments/development'],
       File['/root/.netrc']]
   }
 
-  vcsrepo { '/etc/puppet/envs/production/manifests':
+  vcsrepo { '/etc/puppet/environments/production/manifests':
     ensure   => $vcsrepo_ensure,
     provider => git,
     source   => "https://${private_repos}/${private_repos_author}/puppet-manifests.git",
     revision => 'master',
     require  => [
-      File['/etc/puppet/envs/development'],
+      File['/etc/puppet/environments/development'],
       File['/root/.netrc']]
   }
 
