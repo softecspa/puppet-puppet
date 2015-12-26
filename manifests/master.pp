@@ -165,7 +165,7 @@ class puppet::master (
       'set master/ssl_client_header SSL_CLIENT_S_DN',
       'set master/ssl_client_verify_header SSL_CLIENT_VERIFY',
       'set master/always_cache_features true',
-      'set master/environmentpath $confdir/envs',
+      'set master/environmentpath $confdir/environments',
 
       ]
   }
@@ -188,7 +188,7 @@ class puppet::master (
   file { '/etc/puppet/hiera.yaml':
     content => file('puppet/etc/hiera.yaml'),
     group  => 'admin',
-    mode   => 02775,
+    mode   => 0664,
   }
 
   file { '/etc/hiera.yaml':
