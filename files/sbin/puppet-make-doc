@@ -1,5 +1,5 @@
 #!/bin/bash
-MODULEPATH=/etc/puppet/envs/development/modules:/usr/share/puppet/modules
+MODULEPATH=/etc/puppet/environments/development/modules:/usr/share/puppet/modules
 BASEDIR=/var/www/puppet-doc.tools.softecspa.it
 DOCDIR=$BASEDIR/web
 DOCDIR_TMP=$BASEDIR/tmp
