@@ -217,13 +217,14 @@ class puppet (
       ],
   }
 
+  # moved to profile module
   # Remove warning on template_dir setting in old puppet packages
-  ini_setting { 'puppet-templatedir-warning-remove':
-    ensure  => absent,
-    path    => '/etc/puppet/puppet.conf',
-    section => 'main',
-    setting => 'templatedir',
-  }
+  # ini_setting { 'puppet-templatedir-warning-remove':
+  #  ensure  => absent,
+  #  path    => '/etc/puppet/puppet.conf',
+  #  section => 'main',
+  #  setting => 'templatedir',
+  #}
 
   case $environment {
     'production' : {
