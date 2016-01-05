@@ -1,3 +1,4 @@
+# File managed by PUPPET
 ---
 :backends:
   - yaml
