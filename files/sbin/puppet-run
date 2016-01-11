@@ -129,8 +129,9 @@ while [ $COUNTER -le $MAX_ATTEMPTS ]; do
             #job done, now quit
             exit
             ;;
+
         1)
-            if [ -f /var/lib/puppet/state/puppetdlock ]; then
+            if [ -f /var/lib/puppet/state/agent_disabled.lock ]; then
                 log "puppet agent disabled"
                 puppet-motd "puppet agent disabled"
                 exit
@@ -140,20 +141,24 @@ while [ $COUNTER -le $MAX_ATTEMPTS ]; do
             puppet-motd "giving a catalog compilation error. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
             ;;
         2)
+
             log "agent returned 2: agent made changes without failures"
             puppet-motd "applying changes without failures. Look at $OUTPUT_LOGFILE for more info on changes."
             correct_run "Made changes without failures"
             # job done, now quit
             exit
             ;;
+
         4)
             log "agent returned 4: agent failed trying to apply changes"
             puppet-motd "failing while trying to apply changes. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
             ;;
+
         6)
             log "agent returned 6: agent made changes but has failures"
             puppet-motd "applying changes with some failure. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened"
             ;;
+
         *)
             log_error "unexpected exit code: '$?'!"
             puppet-motd "exiting with an unexpected exit code. Please read $OUTPUT_LOGFILE and $ERROR_LOGFILE trying to understand what's happened."
