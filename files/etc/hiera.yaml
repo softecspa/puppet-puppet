@@ -10,10 +10,10 @@
   - "nodes/%{::hostname}"
   - "clusters/%{::cluster}"
   - "ispconfig_%{ispconfig}"
-  - "%{::tier}/${::role}"
-  - "role/${::role}"
-  - "location/${::location}"
-  - "tier/${::tier}"
+  - "%{::tier}/%{::role}"
+  - "role/%{::role}"
+  - "location/%{::location}"
+  - "tier/%{::tier}"
   - 'common'
 
 :merge_behavior: deeper
