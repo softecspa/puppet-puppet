@@ -170,6 +170,7 @@ class puppet::master::gh (
     'tobru/smokeping',
     'maestrodev/wget',
     'mthibaut/users',
+    'garethr/docker',
   ]
 
   puppet::master::module{ $third_party_modules:
