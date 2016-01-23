@@ -171,6 +171,8 @@ class puppet::master::gh (
     'maestrodev/wget',
     'mthibaut/users',
     'garethr/docker',
+    'attachmentgenie/ufw',
+    'andschwa/unattended_upgrades',
   ]
 
   puppet::master::module{ $third_party_modules:
