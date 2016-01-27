@@ -46,7 +46,6 @@ class puppet::master::gh (
     'ispconfig_nginx',
     'ispconfig_zookeeper',
     'puppet',
-    'php',
     'softec_php',
     'pecl',
     'logrotate',
@@ -173,6 +172,7 @@ class puppet::master::gh (
     'garethr/docker',
     'attachmentgenie/ufw',
     'andschwa/unattended_upgrades',
+    'jippi/php',
   ]
 
   puppet::master::module{ $third_party_modules:
