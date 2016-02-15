@@ -175,7 +175,7 @@ class puppet::master::gh (
     # mi garba anche: 'mayflower/php',
     # ma softec aveva forkato jippi
     'jippi/php',
-    'mayflower/hhvm'
+    'mayflower/hhvm',
 
   ]
 
