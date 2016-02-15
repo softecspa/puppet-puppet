@@ -172,7 +172,11 @@ class puppet::master::gh (
     'garethr/docker',
     'attachmentgenie/ufw',
     'andschwa/unattended_upgrades',
+    # mi garba anche: 'mayflower/php',
+    # ma softec aveva forkato jippi
     'jippi/php',
+    'mayflower/hhvm'
+
   ]
 
   puppet::master::module{ $third_party_modules:
