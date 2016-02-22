@@ -176,6 +176,7 @@ class puppet::master::gh (
     # ma softec aveva forkato jippi
     'jippi/php',
     'mayflower/hhvm',
+    'danzilio/letsencrypt'
 
   ]
 
