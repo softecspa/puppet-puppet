@@ -171,7 +171,7 @@ class puppet::master::gh (
     'mthibaut/users',
     'garethr/docker',
     'attachmentgenie/ufw',
-    'andschwa/unattended_upgrades',
+    'voxpopuli/unattended_upgrades',
     # mi garba anche: 'mayflower/php',
     # ma softec aveva forkato jippi
     'jippi/php',
