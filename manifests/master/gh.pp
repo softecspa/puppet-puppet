@@ -116,7 +116,7 @@ class puppet::master::gh (
     'softec_xen',
     'nagios',
     'softec_newrelic',
-    'hpsdr',
+    # 'hpsdr', sostituisco con CERIT-SC/hp_sdr
     'modprobe',
   ]
 
@@ -176,8 +176,8 @@ class puppet::master::gh (
     # ma softec aveva forkato jippi
     'jippi/php',
     'mayflower/hhvm',
-    'danzilio/letsencrypt'
-
+    'danzilio/letsencrypt',
+    'CERIT-SC/hp_sdr'
   ]
 
   puppet::master::module{ $third_party_modules:
