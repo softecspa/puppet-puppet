@@ -159,7 +159,8 @@ class puppet::master::gh (
     author => 'puppetlabs',
   }
 
-  ## Third-party modules
+
+  ## Third-party modules con nomi come si deve
   # TODO: eliminare questi moduli da gh/softecspa
   $third_party_modules = [
     'thomasvandoren/etckeeper',
@@ -179,21 +180,19 @@ class puppet::master::gh (
     'danzilio/letsencrypt',
     'CERIT-SC/hp_sdr'
   ]
-
   puppet::master::module{ $third_party_modules:
     prefix => 'puppet',
   }
 
+  ## Third-party modules con nomi strani
   puppet::master::module { 'docker':
     prefix => 'garethr',
     author => 'garethr',
   }
-
   puppet::master::module { [ 'puppet-module-types', 'puppet-module-common' ]:
     prefix => '',
     author => 'ghoneycutt',
   }
-
   puppet::master::module{ 'datadog':
     author => 'DataDog',
     repo_url => 'https://github.com/DataDog/puppet-datadog-agent.git',
