@@ -166,7 +166,7 @@ class puppet::master::gh (
     'thomasvandoren/etckeeper',
     'smintz/mysql_mmm',
     'fsalum/newrelic',
-    'fsalum/redis',
+    'arioch/redis',
     'tobru/smokeping',
     'maestrodev/wget',
     'mthibaut/users',
