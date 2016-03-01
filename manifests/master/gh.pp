@@ -39,7 +39,7 @@ class puppet::master::gh (
     'tmpreaper',
     'vim',
     'webalizer',
-    'zookeeper',
+    'zookeeper',                #lo uccido è usato solo su liliana-solr01!
     'jetty',
     'solr',
     'ispconfig_solr',
@@ -178,7 +178,9 @@ class puppet::master::gh (
     'jippi/php',
     'mayflower/hhvm',
     'danzilio/letsencrypt',
-    'CERIT-SC/hp_sdr'
+    'CERIT-SC/hp_sdr',
+    # 'deric/zookeeper', TODO: dismettere il nostro modulo zookeper, poi si puo' usare questo
+    'deric/mesos'
   ]
   puppet::master::module{ $third_party_modules:
     prefix => 'puppet',
@@ -194,7 +196,7 @@ class puppet::master::gh (
     author => 'ghoneycutt',
   }
   puppet::master::module{ 'datadog':
-    author => 'DataDog',
+    author   => 'DataDog',
     repo_url => 'https://github.com/DataDog/puppet-datadog-agent.git',
   }
 
@@ -215,4 +217,28 @@ class puppet::master::gh (
     author => 'softecspa',
     prefix => 'evenup',
   }
+
+  puppet::master::module { 'backups':
+    author => 'softecspa',
+    prefix => 'evenup',
+  }
+
+
+  # Additional augeas providers, approved by puppetlabs
+  $augeasproviders = [
+    'augeasproviders_core',
+    'augeasproviders_shellvar',
+    'augeasproviders_ssh',
+    'augeasproviders_sysctl',
+    'augeasproviders_pam',
+    'augeasproviders_grub',
+    'augeasproviders_nagios',
+    'augeasproviders_mounttab'
+  ]
+  puppet::master::module { $augeasproviders :
+    author => 'herculesteam',
+    prefix => '',
+  }
+
+
 }
