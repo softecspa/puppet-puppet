@@ -179,8 +179,9 @@ class puppet::master::gh (
     'mayflower/hhvm',
     'danzilio/letsencrypt',
     'CERIT-SC/hp_sdr',
-    # 'deric/zookeeper', TODO: dismettere il nostro modulo zookeper, poi si puo' usare questo
-    'deric/mesos'
+    # 'deric/zookeeper', TODO: dismettere il nostro modulo zookeper
+    'deric/mesos',
+    'lorello/swapfile'
   ]
   puppet::master::module{ $third_party_modules:
     prefix => 'puppet',
