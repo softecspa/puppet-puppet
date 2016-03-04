@@ -181,7 +181,8 @@ class puppet::master::gh (
     'CERIT-SC/hp_sdr',
     # 'deric/zookeeper', TODO: dismettere il nostro modulo zookeper
     'deric/mesos',
-    'lorello/swapfile'
+    'lorello/swapfile',
+    'netmanagers/bareos'
   ]
   puppet::master::module{ $third_party_modules:
     prefix => 'puppet',
