@@ -47,8 +47,8 @@ class puppet::master::utility {
   }
 
   file {'/var/run/lock/registry':
-    ensure  => directory,
-    mode    => '0755',
-    owner   => 'puppet'
+    ensure => directory,
+    mode   => '0755',
+    owner  => 'puppet'
   }
 }

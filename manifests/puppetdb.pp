@@ -48,17 +48,17 @@ class puppet::puppetdb(
   }
 
   service { 'puppetdb':
-    enable  => true,
-    ensure  => running,
+    enable => true,
+    ensure => running,
   }
 
-  file { "puppetdb-database-ini":
-    path    => "/etc/puppetdb/conf.d/database.ini",
+  file { 'puppetdb-database-ini':
+    path    => '/etc/puppetdb/conf.d/database.ini',
     owner   => 'puppetdb',
     group   => 'puppetdb',
     mode    => '0640',
     content => template('puppet/puppetdb/database.ini.erb'),
-    notify  => Service["puppetdb"]
+    notify  => Service['puppetdb']
   }
 
   #file { "puppetdb-jetty-ini":

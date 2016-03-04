@@ -3,10 +3,10 @@ define puppet::master::s3sync (
   $reverse = false,
 ) {
 
-  if ! defined(Class["s3cmd"]) {
-    class {"s3cmd":
-      access_key  => $::aws_access_key,
-      secret_key  => $::aws_secret_key,
+  if ! defined(Class['s3cmd']) {
+    class {'s3cmd':
+      access_key => $::aws_access_key,
+      secret_key => $::aws_secret_key,
     }
   }
 

@@ -176,19 +176,19 @@ class puppet::master (
   file { $shared_modulepath:
     ensure => directory,
     group  => 'admin',
-    mode   => 02775,
+    mode   => '02775',
   }
 
   file { '/etc/puppet/hieradata':
     ensure => directory,
     group  => 'admin',
-    mode   => 02775,
+    mode   => '02775',
   }
 
   file { '/etc/puppet/hiera.yaml':
     content => file('puppet/etc/hiera.yaml'),
-    group  => 'admin',
-    mode   => 0664,
+    group   => 'admin',
+    mode    => '0664',
   }
 
   file { '/etc/hiera.yaml':

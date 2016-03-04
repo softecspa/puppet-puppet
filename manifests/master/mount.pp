@@ -26,16 +26,16 @@ define puppet::master::mount(
 ){
 
   if !defined(Concat['/etc/puppet/fileserver.conf']) {
-    fail "Missing concat main call"
+    fail 'Missing concat main call'
   }
 
   file { $path:
-    ensure  => directory,
-    group   => admin,
-    mode    => 02775,
+    ensure => directory,
+    group  => admin,
+    mode   => '02775',
   }
 
-  concat::fragment{"puppetmaster mountpoint $title":
+  concat::fragment{"puppetmaster mountpoint ${title}":
     target  => '/etc/puppet/fileserver.conf',
     content => template('puppet/etc/fileserver_mountpoint.erb'),
   }

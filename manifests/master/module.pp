@@ -135,11 +135,11 @@ define puppet::master::module (
     }
   }
   vcsrepo { "${target_path_}/${target_}":
-    ensure              => $ensure_vcsrepo,
-    provider            => git,
-    source              => $source_url,
-    revision            => $revision_vcsrepo,
-    identity            => $identity
+    ensure   => $ensure_vcsrepo,
+    provider => git,
+    source   => $source_url,
+    revision => $revision_vcsrepo,
+    identity => $identity
   }
 
 }
