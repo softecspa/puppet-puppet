@@ -63,29 +63,27 @@ class puppet (
         default => $version
       }
       $facter_version = 'latest'
-      softec_apt::mirror::repo { 'puppetlabs':
-        title  => 'puppetlabs',
-        enable => true,
-        url    => 'apt.puppetlabs.com',
-        repos  => 'main',
+      apt::source { 'puppetlabs':
+        location => 'http://apt.puppetlabs.com',
+        repos    => 'main',
+        key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
       }
-      softec_apt::mirror::repo { 'puppetlabs-deps':
-        title  => 'puppetlabs-deps',
-        enable => true,
-        url    => 'apt.puppetlabs.com',
-        repos  => 'dependencies',
+      apt::source { 'puppetlabs-deps':
+        location => 'http://apt.puppetlabs.com',
+        repos    => 'dependencies',
+        key      => '47B320EB4C7C375AA9DAE1A01054B7A24BD6EC30',
       }
       softec_apt::ppa { 'skettler/puppet':
         key    => 'F02E13A8C7F16065114C757F19803648C18789EA',
-        mirror => true,
+        mirror => false,
       }
       softec_apt::ppa { 'raphink/augeas-1.0.0':
         key    => 'CF6D4DF76A7B62DDCE6C3D99EEDBF1C2AE498453',
-        mirror => true,
+        mirror => false,
       }
       softec_apt::ppa { 'brightbox/ruby-ng':
         key    => '80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6',
-        mirror => true,
+        mirror => false,
       } ->
       package {
         'ruby1.9.1':
@@ -149,15 +147,15 @@ class puppet (
     }
 
     default: {
-        warning('FIXME: this module does not work in this distro release')
+        warning("FIXME: this module does not work in this distro release: ${::lsbdistcodename}")
     }
   }
 
   # CONFIG
   # TODO: chiarire a cosa serve questo qui
   # suppongo serva per il modulo SSH, ma da qui non si capisce
-  # esplicitiamo la dipendenza con una define puppet::augeaslens{ 'ssh': } da 
-  # mettere nel modulo openssh. E magari con l'occasione tiriamo fuori augeas 
+  # esplicitiamo la dipendenza con una define puppet::augeaslens{ 'ssh': } da
+  # mettere nel modulo openssh. E magari con l'occasione tiriamo fuori augeas
   # dal modulo puppet
   file { "${augeas_lenses_dir}/ssh.aug":
     ensure  => present,
@@ -231,7 +229,7 @@ class puppet (
       # tra le 14 e le 16, dal lunedi al giovedi compresi
       # Fx - sposto l'intervallo del mattino a 9-13
       # Fx - 13/02/2013 - tolgo l'esecuzione del puppet al pomeriggio
-      $hour1 = fqdn_rand(2, 'puppet run') + 09
+      $hour1 = fqdn_rand(2, 'puppet run') + 9
       $hour2 = fqdn_rand(2, 'puppet run') + 11
       $hour3 = fqdn_rand(2, 'puppet run') + 13
       $minute = fqdn_rand(59, 'puppet run')
